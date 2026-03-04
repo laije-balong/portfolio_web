@@ -1,0 +1,67 @@
+[
+  {
+    "id": "opt-stock-pme",
+    "slug": "opt-stock-pme",
+    "title": "Optimisation des Stocks PME",
+    "certified": true,
+    "tools": ["Python", "SQL", "Pandas", "D3.js"],
+    "excerpt": "Réduction des coûts de stockage de 23% en modélisant les seuils de réapprovisionnement pour une PME manufacturière de 45 SKUs critiques.",
+    "cover": "/assets/images/projects/stock.jpg",
+    "certificate": "/assets/images/projects/certificates/google_capstone.png",
+    "challenge": "La PME subissait des ruptures fréquentes (17% des commandes) et un sur-stockage chronique immobilisant 180k€ de trésorerie. Les données historiques (3 ans de transactions) étaient dispersées dans 4 bases hétérogènes.",
+    "solution": "Consolidation des sources via ETL SQL, modèle de prévision ARIMA saisonnier par SKU, puis calcul des points de commande économiques (EOQ) intégrant la variabilité fournisseur. Dashboard D3 temps réel pour le suivi.",
+    "proofs": "Backtesting sur 12 mois confirme -23% de stock moyen, 0 rupture critique sur les 6 premiers mois post-déploiement. ROI estimé à 8 mois."
+  },
+  {
+    "id": "churn-predict",
+    "slug": "churn-predict",
+    "title": "Prédiction Churn Telecoms",
+    "certified": false,
+    "tools": ["Python", "Scikit-learn", "XGBoost", "Tableau"],
+    "excerpt": "Modèle de prédiction du désabonnement client atteignant 91% de précision sur 50k abonnés, avec identification des facteurs déclencheurs.",
+    "cover": "/assets/images/projects/churn.jpg",
+    "certificate": null,
+    "challenge": "Taux de churn mensuel de 4.2% représentant 2.1M€ de MRR perdu. L'équipe commerciale manquait d'outils pour prioriser les actions de rétention.",
+    "solution": "Feature engineering sur 180 variables comportementales (usage, interactions support, historique paiements). Modèle XGBoost avec SHAP values pour l'explicabilité. Pipeline automatisé d'alertes hebdomadaires.",
+    "proofs": "AUC-ROC 0.94, précision 91%, rappel 87% sur jeu de test. Réduction du churn de 1.1 point sur les 3 premiers mois d'utilisation."
+  },
+  {
+    "id": "dashboard-rh",
+    "slug": "dashboard-rh",
+    "title": "Dashboard RH Analytique",
+    "certified": true,
+    "tools": ["Power BI", "SQL Server", "DAX", "Python"],
+    "excerpt": "Centralisation des KPIs RH de 6 filiales européennes en un dashboard unifié, réduisant le temps de reporting mensuel de 3 jours à 2 heures.",
+    "cover": "/assets/images/projects/hr.jpg",
+    "certificate": "/assets/images/projects/certificates/powerbi_cert.png",
+    "challenge": "6 filiales avec des SIRH différents, des définitions métriques incohérentes et aucune vision consolidée. Le reporting mensuel mobilisait 3 personnes pendant 3 jours.",
+    "solution": "Architecture data warehouse (SQL Server), ETL Python pour normalisation des données sources, modèle sémantique Power BI avec mesures DAX standardisées et drill-through géographique.",
+    "proofs": "Dashboard adopté par 45 managers en J+30. Temps de reporting réduit à 2h. 3 décisions RH stratégiques documentées comme issues directement des insights."
+  },
+  {
+    "id": "nlp-reviews",
+    "slug": "nlp-reviews",
+    "title": "Analyse Sentiments E-commerce",
+    "certified": false,
+    "tools": ["Python", "BERT", "spaCy", "FastAPI"],
+    "excerpt": "Pipeline NLP d'analyse des avis clients (500k reviews) identifiant les problèmes produits 3 semaines avant les remontées traditionnelles.",
+    "cover": "/assets/images/projects/nlp.jpg",
+    "certificate": null,
+    "challenge": "Volume d'avis trop important pour analyse manuelle. Les équipes produit découvraient les problèmes qualité en retard, après impact sur les ventes.",
+    "solution": "Fine-tuning BERT multilingue (FR/EN/ES) sur 15k avis annotés. Pipeline temps réel via FastAPI avec alertes automatiques sur clusters de sentiments négatifs émergents.",
+    "proofs": "Détection des problèmes en moyenne 19 jours avant signalement équipe qualité. Précision de classification 89%. 4 recalls produit anticipés."
+  },
+  {
+    "id": "forecast-energy",
+    "slug": "forecast-energy",
+    "title": "Prévision Consommation Énergie",
+    "certified": true,
+    "tools": ["Python", "Prophet", "InfluxDB", "Grafana"],
+    "excerpt": "Modèle de prévision de consommation électrique pour 12 bâtiments industriels, permettant une optimisation tarifaire économisant 340k€/an.",
+    "cover": "/assets/images/projects/energy.jpg",
+    "certificate": "/assets/images/projects/certificates/data_analyst.png",
+    "challenge": "Contrats d'énergie mal calibrés sur les pointes de consommation (surcoûts de pénalité). Absence de visibilité sur les patterns de consommation par bâtiment.",
+    "solution": "Instrumentation InfluxDB pour collecte temps réel, modèles Prophet par bâtiment intégrant météo et calendrier de production, dashboard Grafana avec alertes de dépassement.",
+    "proofs": "MAPE moyen 4.2% sur horizon 24h. Réduction des pénalités de dépassement de 78%. ROI projet atteint en 4 mois."
+  }
+]
