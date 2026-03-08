@@ -8,6 +8,7 @@ import router from '../router.js';
 import { $, setHTML } from '../utils/dom.js';
 import { uid } from '../utils/math.js';
 
+
 // ── Stats animées ──────────────────────────────────────────────
 const STATS = [
   { value: 5,   suffix: '+',  label: 'Années\nd\'expérience', color: '#00D9FF' },
@@ -15,6 +16,7 @@ const STATS = [
   { value: 340, suffix: 'k€', label: 'Économies\ngénérées',   color: '#10b981' },
   { value: 91,  suffix: '%',  label: 'Précision\nmoyenne',    color: '#f59e0b' },
 ];
+      
 
 // ── Stack technique ────────────────────────────────────────────
 const STACK = [
@@ -98,7 +100,7 @@ function buildHTML(pid) {
               <!-- Photo (placeholder SVG si pas d'image) -->
               <div class="ab-photo" id="ab-photo">
                 <img
-                  src="/assets/images/profile.jpg"
+                  src="/assets/images/profile.jpeg"
                   alt="Photo de profil"
                   class="ab-photo-img"
                   style="filter:url(#${fid})"
@@ -126,10 +128,10 @@ function buildHTML(pid) {
           <div class="ab-bio-col">
             <div class="ab-tag">// profil.json</div>
             <h1 class="ab-name">
-              <span class="ab-name-first">Votre</span><br>
-              <span class="ab-name-last gradient-text">Prénom Nom</span>
+              <span class="ab-name-first">BALONG</span><br>
+              <span class="ab-name-last gradient-text">Laije Belthassar</span>
             </h1>
-            <p class="ab-role">Data Analyst · Explorateur de données</p>
+            <p class="ab-role">je vais ajouter les roles que je peux tenir</p>
 
             <p class="ab-bio">
               Je transforme le chaos des données brutes en décisions actionnables.
@@ -139,7 +141,7 @@ function buildHTML(pid) {
             </p>
 
             <p class="ab-bio" style="margin-top:12px;">
-              Basé à Paris. Curieux de tout. Passionné par les intersections entre
+              Basé à Brazzaville. Curieux de tout. Passionné par les intersections entre
               statistiques, design et impact business réel.
             </p>
 
@@ -175,7 +177,7 @@ function buildHTML(pid) {
         </div>
       </div>
 
-      <!-- ── Stats ── -->
+      <!-- ── Stats 
       <div class="ab-stats-section">
         <div class="container">
           <div class="ab-stats-grid">
@@ -194,6 +196,7 @@ function buildHTML(pid) {
           </div>
         </div>
       </div>
+      ── -->
 
       <!-- ── Stack technique ── -->
       <div class="ab-stack-section">

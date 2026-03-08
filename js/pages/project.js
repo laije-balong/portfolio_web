@@ -1,279 +1,195 @@
 /* ============================================================
-   GnoLab — Project Detail Page
+   GnoLab — Page Projet (vue détaillée)
+   Layout split : récit à gauche, MiniChart interactif à droite
    ============================================================ */
 
 import router from '../router.js';
-import store from '../state.js';
-import { $, $$, setHTML, animate, flipFrom, renderTags, wait } from '../utils/dom.js';
+import store  from '../state.js';
+import { $, $$, setHTML, renderTags } from '../utils/dom.js';
+import { flip }       from '../utils/flip.js';
+import { MiniChart }  from '../charts/MiniChart.js';
+import { ScrollReveal }   from '../utils/scroll-reveal.js';
+import { ouvrirLightbox } from '../utils/lightbox.js';
 
-const ICONS = {
-  back:   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5m0 0l7 7m-7-7 7-7"/></svg>`,
+/* ── Icônes ──────────────────────────────────────────────────── */
+const ICONES = {
+  retour: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5m0 0l7 7m-7-7 7-7"/></svg>`,
   cert:   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>`,
-  ext:    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>`,
+  lien:   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>`,
+  etoile: `<svg viewBox="0 0 24 24" fill="currentColor" width="12" height="12"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`,
 };
 
-const STATES = [
-  { id: 'raw',     label: 'Brut' },
-  { id: 'cleaned', label: 'Nettoyé' },
-  { id: 'results', label: 'Résultats' },
+/* ── États de visualisation disponibles ─────────────────────── */
+const ETATS = [
+  { id: 'raw',     label: 'Brut',     desc: 'Données originales non traitées' },
+  { id: 'cleaned', label: 'Nettoyé',  desc: 'Données structurées et filtrées' },
+  { id: 'results', label: 'Résultats', desc: 'Insights et métriques finaux' },
 ];
 
+/* ── Chargement d'un projet ──────────────────────────────────── */
 /**
- * Placeholder visual canvas per state
- * Will be replaced by MiniChart particle components in next module
+ * Récupère un projet par son slug depuis le cache ou l'API
+ * @param {string} slug
+ * @returns {Promise<Object|null>}
  */
-function renderPlaceholderVisual(state, project) {
-  const colors = {
-    raw:     '#ef4444',
-    cleaned: '#f59e0b',
-    results: '#10b981',
-  };
+async function chargerProjet(slug) {
+  /* Chercher dans le cache du store en priorité */
+  const cache = store.get('projects') || [];
+  const trouve = cache.find(p => p.slug === slug);
+  if (trouve) return trouve;
 
-  const color = colors[state] || '#0074D9';
-  const labels = {
-    raw:     'Données brutes',
-    cleaned: 'Données nettoyées',
-    results: 'Résultats finaux',
-  };
-
-  return /* html */`
-    <svg
-      width="100%"
-      height="100%"
-      viewBox="0 0 300 200"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-label="Visualisation ${labels[state]}"
-    >
-      <defs>
-        <radialGradient id="vglow-${state}" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stop-color="${color}" stop-opacity="0.15"/>
-          <stop offset="100%" stop-color="${color}" stop-opacity="0"/>
-        </radialGradient>
-      </defs>
-
-      <rect width="300" height="200" fill="url(#vglow-${state})"/>
-
-      ${state === 'raw' ? renderRawBars(color) : ''}
-      ${state === 'cleaned' ? renderCleanBars(color) : ''}
-      ${state === 'results' ? renderResultLine(color) : ''}
-
-      <!-- Label -->
-      <text
-        x="150" y="185"
-        text-anchor="middle"
-        font-family="JetBrains Mono, monospace"
-        font-size="9"
-        fill="${color}"
-        opacity="0.6"
-        letter-spacing="0.08em"
-      >${labels[state].toUpperCase()}</text>
-    </svg>
-  `;
+  /* Sinon charger depuis le JSON */
+  const reponse = await fetch('/data/projects.json');
+  if (!reponse.ok) throw new Error(`HTTP ${reponse.status}`);
+  const liste = await reponse.json();
+  store.set('projects', liste);
+  return liste.find(p => p.slug === slug) || null;
 }
 
-function renderRawBars(color) {
-  const bars = [30, 85, 45, 110, 60, 90, 35, 75, 120, 50];
-  return bars.map((h, i) => {
-    const x = 30 + i * 24;
-    const y = 165 - h;
-    return `<rect x="${x}" y="${y}" width="14" height="${h}" fill="${color}" opacity="${0.3 + Math.random() * 0.4}" rx="2"/>`;
-  }).join('');
-}
-
-function renderCleanBars(color) {
-  const bars = [45, 62, 78, 88, 72, 95, 68, 85, 92, 75];
-  return bars.map((h, i) => {
-    const x = 30 + i * 24;
-    const y = 165 - h;
-    return `
-      <rect x="${x}" y="${y}" width="14" height="${h}" fill="${color}" opacity="0.7" rx="2"/>
-      <rect x="${x}" y="${y}" width="14" height="${Math.max(h * 0.15, 4)}" fill="white" opacity="0.15" rx="2"/>
-    `;
-  }).join('');
-}
-
-function renderResultLine(color) {
-  const pts = [
-    [30, 140], [60, 120], [90, 100], [120, 95], [150, 80],
-    [180, 70], [210, 55], [240, 45], [270, 35],
-  ];
-
-  let path = `M ${pts[0][0]} ${pts[0][1]}`;
-  for (let i = 1; i < pts.length; i++) {
-    const [px, py] = pts[i - 1];
-    const [cx, cy] = pts[i];
-    const cpx1 = px + (cx - px) / 3;
-    const cpx2 = px + 2 * (cx - px) / 3;
-    path += ` C ${cpx1} ${py} ${cpx2} ${cy} ${cx} ${cy}`;
-  }
-
-  // Area path
-  const areaPath = path + ` L ${pts.at(-1)[0]} 165 L ${pts[0][0]} 165 Z`;
-
-  // Arrow at end
-  const [lx, ly] = pts.at(-1);
-  const arrowPath = `M ${lx} ${ly} l 8 -4 l -4 8 Z`;
-
-  return /* html */`
-    <path d="${areaPath}" fill="${color}" opacity="0.08"/>
-    <path d="${path}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
-    <path d="${arrowPath}" fill="${color}" opacity="0.7"/>
-    ${pts.map(([x, y]) => `<circle cx="${x}" cy="${y}" r="2.5" fill="${color}" opacity="0.8"/>`).join('')}
-  `;
-}
-
+/* ── Construction du HTML de la page ────────────────────────── */
 /**
- * Build the full project page HTML
- * @param {Object} project
- * @param {string} activeState
+ * @param {Object} projet  — données complètes du projet
+ * @returns {string} HTML complet de la page
  */
-function buildProjectHTML(project, activeState) {
-  const stateButtons = STATES.map(s => /* html */`
-    <button
-      class="state-btn ${s.id === activeState ? 'is-active' : ''}"
-      data-state="${s.id}"
-      aria-pressed="${s.id === activeState}"
-    >${s.label}</button>
-  `).join('');
-
-  const certButton = project.certified && project.certificate
-    ? /* html */`
-        <button class="cert-btn" data-cert-url="${project.certificate}">
-          ${ICONS.cert}
-          Voir le certificat
-          ${ICONS.ext}
-        </button>
-      `
+function construirePage(projet) {
+  /* Badge certifié optionnel */
+  const badgeCertif = projet.certified
+    ? `<span class="proj-badge-cert">${ICONES.etoile} Certifié</span>`
     : '';
 
-  return /* html */`
-    <div class="project-page">
-      <div class="container">
-        <div class="project-layout">
+  /* Bouton certificat optionnel */
+  const btnCertif = projet.certified && projet.certificate
+    ? `<button class="proj-btn-cert cert-btn" data-cert-url="${projet.certificate}"
+         aria-label="Voir le certificat du projet">
+         ${ICONES.cert} Voir le certificat ${ICONES.lien}
+       </button>`
+    : '';
 
-          <!-- ── Left: Narrative ── -->
-          <div class="project-narrative">
-            <button class="project-back-btn" id="back-btn">
-              ${ICONS.back}
-              Retour aux projets
-            </button>
+  return `
+    <div class="projet-page">
 
-            <h1 class="project-title">${project.title}</h1>
-            <p class="project-excerpt-large">${project.excerpt}</p>
+      <!-- ── En-tête navigation ── -->
+      <div class="proj-header container" data-reveal="fade-up">
+        <button class="proj-btn-retour" id="back-btn" aria-label="Retour aux projets">
+          ${ICONES.retour} Retour
+        </button>
+        ${badgeCertif}
+      </div>
 
-            <div class="card-tags" style="margin-bottom:2.5rem;">
-              ${renderTags(project.tools)}
-            </div>
+      <!-- ── Layout split ── -->
+      <div class="container proj-layout">
 
-            <div class="project-section">
-              <p class="project-section__label">Challenge</p>
-              <h4>Le problème</h4>
-              <p>${project.challenge || 'Description en cours de rédaction.'}</p>
-            </div>
+        <!-- Colonne gauche : récit scrollable -->
+        <div class="projet-recit">
 
-            <div class="project-section">
-              <p class="project-section__label">Solution</p>
-              <h4>L'approche</h4>
-              <p>${project.solution || 'Description en cours de rédaction.'}</p>
-            </div>
-
-            <div class="project-section">
-              <p class="project-section__label">Preuves & Code</p>
-              <h4>Les résultats</h4>
-              <p>${project.proofs || 'Métriques en cours de compilation.'}</p>
-            </div>
+          <!-- Titre + tags -->
+          <div class="proj-intro" data-reveal="fade-right">
+            <h1 class="proj-titre">${projet.title}</h1>
+            <p class="proj-excerpt">${projet.excerpt}</p>
+            <div class="proj-tags">${renderTags(projet.tools)}</div>
           </div>
 
-          <!-- ── Right: Visual Panel ── -->
-          <aside class="project-visual-panel">
-            <div class="visual-card">
+          <!-- Section Challenge -->
+          <section class="proj-section" data-reveal="fade-right" data-delay="80">
+            <div class="proj-section-label">01 — Challenge</div>
+            <h3 class="proj-section-titre">Le problème à résoudre</h3>
+            <p class="proj-section-texte">${projet.challenge || 'Non renseigné.'}</p>
+          </section>
 
-              <div class="visual-card__header">
-                <div class="visual-card__dots">
-                  <span></span><span></span><span></span>
-                </div>
-                <span class="visual-card__title">${project.slug}.viz</span>
-              </div>
+          <!-- Section Solution -->
+          <section class="proj-section" data-reveal="fade-right" data-delay="80">
+            <div class="proj-section-label">02 — Solution</div>
+            <h3 class="proj-section-titre">L'approche technique</h3>
+            <p class="proj-section-texte">${projet.solution || 'Non renseigné.'}</p>
+          </section>
 
-              <div class="state-buttons" role="group" aria-label="État de la visualisation">
-                ${stateButtons}
-              </div>
+          <!-- Section Preuves -->
+          <section class="proj-section" data-reveal="fade-right" data-delay="80">
+            <div class="proj-section-label">03 — Preuves &amp; Code</div>
+            <h3 class="proj-section-titre">Résultats mesurables</h3>
+            <p class="proj-section-texte">${projet.proofs || 'Non renseigné.'}</p>
+          </section>
 
-              <div class="visual-card__canvas" id="viz-canvas">
-                ${renderPlaceholderVisual(activeState, project)}
-              </div>
-
-              ${certButton}
-            </div>
-          </aside>
-
+          <!-- Bouton certificat -->
+          ${btnCertif ? `<div class="proj-certif-wrap" data-reveal="fade-up">${btnCertif}</div>` : ''}
         </div>
+
+        <!-- Colonne droite : visualisation interactive (sticky) -->
+        <aside class="proj-viz-panel">
+          <div class="visual-card" data-reveal="fade-left">
+
+            <!-- En-tête de la carte visuelle -->
+            <div class="visual-card__header">
+              <span class="visual-card__label">Visualisation interactive</span>
+              <span class="visual-card__outil">${projet.tools?.[0] ?? 'Data'}</span>
+            </div>
+
+            <!-- Zone du graphique animé -->
+            <div class="visual-card__canvas" id="viz-canvas"></div>
+
+            <!-- Boutons d'état Brut / Nettoyé / Résultats -->
+            <div class="state-buttons" role="group" aria-label="Choisir la vue">
+              ${ETATS.map(e => `
+                <button
+                  class="state-btn ${e.id === 'raw' ? 'is-active' : ''}"
+                  data-state="${e.id}"
+                  title="${e.desc}"
+                  aria-pressed="${e.id === 'raw'}"
+                >${e.label}</button>
+              `).join('')}
+            </div>
+
+            <!-- Description de l'état actif -->
+            <p class="visual-card__desc" id="viz-desc">${ETATS[0].desc}</p>
+          </div>
+        </aside>
       </div>
     </div>
   `;
 }
 
+/* ── Module principal ─────────────────────────────────────────── */
 /**
- * Load a project by slug
- * @param {string} slug
- * @returns {Promise<Object|null>}
- */
-async function loadProject(slug) {
-  // Try store cache
-  const projects = store.get('projects') || [];
-  const cached = projects.find(p => p.slug === slug);
-  if (cached) return cached;
-
-  // Fetch all and cache
-  const res = await fetch('/data/projects.json');
-  if (!res.ok) return null;
-  const all = await res.json();
-  store.set('projects', all);
-  return all.find(p => p.slug === slug) ?? null;
-}
-
-/**
- * Mount the project detail page
+ * Monte la page projet identifiée par le slug dans l'URL
  * @param {HTMLElement} container
- * @param {{ slug: string }} params
- * @returns {{ destroy: Function }}
+ * @param {Object}      params    — paramètres de route { slug }
+ * @returns {{ destroy(): void }}
  */
 export async function mount(container, params) {
-  const { slug } = params;
+  const slug = params?.slug;
 
-  // Loading state
-  setHTML(container, /* html */`
-    <div class="project-page">
-      <div class="container">
-        <div class="project-layout">
-          <div class="project-narrative" style="padding-top:4rem;">
-            <div class="skeleton" style="height:44px;width:60%;margin-bottom:2rem;"></div>
-            <div class="skeleton" style="height:56px;width:90%;margin-bottom:1rem;"></div>
-            <div class="skeleton" style="height:20px;width:100%;margin-bottom:0.5rem;"></div>
-            <div class="skeleton" style="height:20px;width:85%;"></div>
-          </div>
-          <div class="project-visual-panel" style="padding-top:4rem;">
-            <div class="skeleton" style="height:360px;border-radius:16px;"></div>
-          </div>
+  /* ── Squelette de chargement ── */
+  setHTML(container, `
+    <div class="container" style="padding-top:6rem">
+      <div class="proj-layout">
+        <div class="projet-recit" style="padding-top:2rem">
+          <div class="skeleton" style="height:40px;width:55%;margin-bottom:1.5rem;border-radius:8px"></div>
+          <div class="skeleton" style="height:60px;width:90%;margin-bottom:1rem;border-radius:8px"></div>
+          <div class="skeleton" style="height:16px;width:100%;margin-bottom:0.5rem;border-radius:4px"></div>
+          <div class="skeleton" style="height:16px;width:80%;border-radius:4px"></div>
+        </div>
+        <div class="proj-viz-panel" style="padding-top:2rem">
+          <div class="skeleton" style="height:360px;border-radius:16px"></div>
         </div>
       </div>
     </div>
   `);
 
-  // Load data
-  let project;
+  /* ── Chargement du projet ── */
+  let projet;
   try {
-    project = await loadProject(slug);
+    projet = await chargerProjet(slug);
   } catch (err) {
-    console.error('ProjectPage: load failed', err);
+    console.error('Page projet : échec du chargement', err);
   }
 
-  if (!project) {
-    setHTML(container, /* html */`
-      <div class="container" style="padding-top:8rem;text-align:center;">
+  /* Projet introuvable */
+  if (!projet) {
+    setHTML(container, `
+      <div class="container" style="padding-top:8rem;text-align:center">
         <h2>Projet introuvable</h2>
-        <p>Le projet &laquo; ${slug} &raquo; n'existe pas.</p>
-        <button class="hero-btn hero-btn--secondary" style="margin-top:2rem;" id="back-404">
+        <p style="margin-block:1rem">Le projet « ${slug} » n'existe pas.</p>
+        <button class="hero-btn hero-btn--secondary" id="back-404">
           Retour aux projets
         </button>
       </div>
@@ -282,78 +198,80 @@ export async function mount(container, params) {
     return { destroy() {} };
   }
 
-  // Render page
-  let activeState = 'raw';
-  setHTML(container, buildProjectHTML(project, activeState));
+  /* ── Rendu de la page ── */
+  setHTML(container, construirePage(projet));
+  document.title = `${projet.title} · GnoLab`;
 
-  // FLIP animation if we have a source rect
-  const flipRect = store.get('flipSource');
-  if (flipRect) {
-    const vizCard = container.querySelector('.visual-card');
-    if (vizCard) {
-      await wait(16); // let paint happen
-      flipFrom(vizCard, flipRect, 450);
-    }
-    store.set('flipSource', null);
+  /* Révéler l'overlay FLIP (agrandi pendant le clic sur la carte) */
+  flip.reveal(60);
+
+  /* ── Animations scroll ── */
+  const reveal = ScrollReveal(container);
+
+  /* ── MiniChart interactif ── */
+  const vizCanvas = $('#viz-canvas', container);
+  const descViz   = $('#viz-desc',   container);
+  let miniChart   = null;
+  let etatActif   = 'raw';
+
+  if (vizCanvas) {
+    miniChart = MiniChart(vizCanvas, projet);
   }
 
-  // Document title
-  document.title = `${project.title} · GnoLab`;
+  /* ── Changement d'état de visualisation ── */
+  /**
+   * Bascule le graphique vers le nouvel état et met à jour les boutons
+   * @param {string} nouvelEtat — 'raw' | 'cleaned' | 'results'
+   */
+  const changerEtat = (nouvelEtat) => {
+    if (nouvelEtat === etatActif) return;
+    etatActif = nouvelEtat;
 
-  // ── State switching ──
-  const vizCanvas = $('#viz-canvas', container);
-  const stateButtons = $$('.state-btn', container);
-
-  const switchState = (newState) => {
-    if (newState === activeState) return;
-    activeState = newState;
-
-    // Update button active states
-    stateButtons.forEach(btn => {
-      const isActive = btn.dataset.state === newState;
-      btn.classList.toggle('is-active', isActive);
-      btn.setAttribute('aria-pressed', String(isActive));
+    /* Mettre à jour les boutons */
+    $$('.state-btn', container).forEach(btn => {
+      const actif = btn.dataset.state === nouvelEtat;
+      btn.classList.toggle('is-active', actif);
+      btn.setAttribute('aria-pressed', String(actif));
     });
 
-    // Transition visual
-    vizCanvas.style.opacity = '0';
-    vizCanvas.style.transform = 'scale(0.97)';
-    vizCanvas.style.transition = 'opacity 150ms ease-in, transform 150ms ease-in';
+    /* Mettre à jour la description */
+    const config = ETATS.find(e => e.id === nouvelEtat);
+    if (descViz && config) descViz.textContent = config.desc;
 
-    setTimeout(() => {
-      setHTML(vizCanvas, renderPlaceholderVisual(newState, project));
-      vizCanvas.style.opacity = '1';
-      vizCanvas.style.transform = 'scale(1)';
-      vizCanvas.style.transition = 'opacity 200ms ease-out, transform 200ms ease-out';
-    }, 150);
+    /* Déléguer au MiniChart */
+    miniChart?.switchTo(nouvelEtat);
   };
 
-  const onStateClick = (e) => {
+  /* Délégation d'événements sur les boutons d'état */
+  const onClicEtat = (e) => {
     const btn = e.target.closest('.state-btn[data-state]');
-    if (btn) switchState(btn.dataset.state);
+    if (btn) changerEtat(btn.dataset.state);
   };
 
-  const stateGroup = container.querySelector('.state-buttons');
-  stateGroup?.addEventListener('click', onStateClick);
+  const groupeEtats = container.querySelector('.state-buttons');
+  groupeEtats?.addEventListener('click', onClicEtat);
 
-  // ── Back button ──
-  const backBtn = $('#back-btn', container);
-  const onBack = () => router.push('/projects');
-  backBtn?.addEventListener('click', onBack);
+  /* ── Bouton retour ── */
+  const btnRetour = $('#back-btn', container);
+  const versGalerie = () => router.push('/projects');
+  btnRetour?.addEventListener('click', versGalerie);
 
-  // ── Certificate button ──
-  const certBtn = container.querySelector('.cert-btn[data-cert-url]');
-  const onCert = () => {
-    const url = certBtn.dataset.certUrl;
-    if (url) window.open(url, '_blank', 'noopener,noreferrer');
+  /* ── Bouton certificat ── */
+  const btnCertif = container.querySelector('.cert-btn[data-cert-url]');
+  const ouvrirCertif = () => {
+    const url = btnCertif?.dataset.certUrl;
+    if (url) ouvrirLightbox(url, `Certificat — ${projet.title}`);
   };
-  certBtn?.addEventListener('click', onCert);
+  btnCertif?.addEventListener('click', ouvrirCertif);
 
+  /* ── Nettoyage au démontage ── */
   return {
     destroy() {
-      stateGroup?.removeEventListener('click', onStateClick);
-      backBtn?.removeEventListener('click', onBack);
-      certBtn?.removeEventListener('click', onCert);
+      groupeEtats?.removeEventListener('click',  onClicEtat);
+      btnRetour?.removeEventListener('click',     versGalerie);
+      btnCertif?.removeEventListener('click',     ouvrirCertif);
+      miniChart?.destroy();
+      reveal.destroy();
     },
   };
 }

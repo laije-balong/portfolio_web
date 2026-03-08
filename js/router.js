@@ -1,33 +1,34 @@
 /* ============================================================
-   GnoLab Router — History API SPA
+   GnoLab — Router SPA (History API)
+   Gère la navigation côté client sans rechargement de page
    ============================================================ */
 
 import store from './state.js';
-import { $, wait } from './utils/dom.js';
+import { $ }  from './utils/dom.js';
 
 /**
- * Route definition
- * @typedef {Object} Route
- * @property {string|RegExp} path
- * @property {Function} component   async () => page module
- * @property {string} [title]
+ * Durées des animations de transition (en ms)
+ * Doivent correspondre aux keyframes dans base.css
  */
+const DUREE_SORTIE  = 180;
+const DUREE_ENTREE  = 320;
 
 class Router {
   constructor() {
-    /** @type {Route[]} */
-    this._routes = [];
-    this._outlet = null;
-    this._currentPage = null;    // mounted page instance
-    this._isTransitioning = false;
+    /** @type {Array<{path: string, component: Function, title?: string}>} */
+    this._routes   = [];
+    this._outlet   = null;
+    this._pageCourante = null;   /* instance de la page montée */
+    this._enTransition = false;
 
     this._onPopState = this._onPopState.bind(this);
-    this._onLinkClick = this._onLinkClick.bind(this);
   }
 
+  /* ── API publique ───────────────────────────────────────────── */
+
   /**
-   * Register routes
-   * @param {Route[]} routes
+   * Enregistre les routes de l'application
+   * @param {Array} routes
    * @returns {Router}
    */
   register(routes) {
@@ -36,205 +37,193 @@ class Router {
   }
 
   /**
-   * Mount router to a DOM element
-   * @param {string} selector
+   * Monte le router sur l'élément outlet
+   * et déclenche le rendu initial
+   * @param {string} selecteur — ex: '#page-outlet'
    * @returns {Router}
    */
-  mount(selector) {
-    this._outlet = $(selector);
-    if (!this._outlet) throw new Error(`Router: outlet "${selector}" not found`);
+  mount(selecteur) {
+    this._outlet = $(selecteur);
+    if (!this._outlet) throw new Error(`Router: outlet "${selecteur}" introuvable`);
 
-    // Listen for browser back/forward
+    /* Écouter le bouton précédent/suivant du navigateur */
     window.addEventListener('popstate', this._onPopState);
 
-    // Delegate link clicks
-    document.addEventListener('click', this._onLinkClick);
-
-    // Initial render
-    this._navigate(window.location.pathname, false);
+    /* Rendu de la route initiale */
+    this._naviguer(window.location.pathname, false);
 
     return this;
   }
 
   /**
-   * Programmatically navigate to a path
-   * @param {string} path
+   * Navigue vers un nouveau chemin (ajoute une entrée dans l'historique)
+   * @param {string} chemin
    */
-  async push(path) {
-    await this._navigate(path, true);
+  async push(chemin) {
+    await this._naviguer(chemin, true);
   }
 
   /**
-   * Replace current history entry
-   * @param {string} path
+   * Remplace l'entrée courante dans l'historique
+   * @param {string} chemin
    */
-  async replace(path) {
-    await this._navigate(path, false, true);
+  async replace(chemin) {
+    await this._naviguer(chemin, false, true);
   }
 
-  // ── Private ──────────────────────────────────────────────
+  /* ── Méthodes privées ───────────────────────────────────────── */
 
   _onPopState() {
-    this._navigate(window.location.pathname, false);
-  }
-
-  _onLinkClick(e) {
-    // Find closest anchor with data-link or internal href
-    const anchor = e.target.closest('a[data-link], a[href^="/"]');
-    if (!anchor) return;
-
-    const href = anchor.getAttribute('href');
-    if (!href || href.startsWith('http') || href.startsWith('//')) return;
-
-    e.preventDefault();
-    this.push(href);
+    this._naviguer(window.location.pathname, false);
   }
 
   /**
-   * Core navigation logic
-   * @param {string} path
-   * @param {boolean} pushHistory
-   * @param {boolean} [replaceHistory]
+   * Logique centrale de navigation
+   * @param {string}  chemin
+   * @param {boolean} ajouterHistorique
+   * @param {boolean} [remplacerHistorique]
    */
-  async _navigate(path, pushHistory = true, replaceHistory = false) {
-    if (this._isTransitioning) return;
+  async _naviguer(chemin, ajouterHistorique = true, remplacerHistorique = false) {
+    /* Éviter les transitions simultanées */
+    if (this._enTransition) return;
 
-    // Normalize path
-    const cleanPath = path || '/';
+    const cheminPropre = chemin || '/';
 
-    // Find matching route
-    const match = this._matchRoute(cleanPath);
-    if (!match) {
-      console.warn(`Router: no match for "${cleanPath}"`);
+    /* Trouver la route correspondante */
+    const correspondance = this._trouverRoute(cheminPropre);
+    if (!correspondance) {
+      console.warn(`Router: aucune route pour "${cheminPropre}" → redirection 404`);
+      await this._naviguer('/404', false, true);
       return;
     }
 
-    this._isTransitioning = true;
+    this._enTransition = true;
 
-    // Update history
-    if (pushHistory) {
-      history.pushState({ path: cleanPath }, '', cleanPath);
-    } else if (replaceHistory) {
-      history.replaceState({ path: cleanPath }, '', cleanPath);
+    /* Mettre à jour l'historique du navigateur */
+    if (ajouterHistorique) {
+      history.pushState({ chemin: cheminPropre }, '', cheminPropre);
+    } else if (remplacerHistorique) {
+      history.replaceState({ chemin: cheminPropre }, '', cheminPropre);
     }
 
-    // Update store
-    store.set('currentRoute', cleanPath);
+    /* Notifier le store → met à jour le nav actif dans app.js */
+    store.set('currentRoute', cheminPropre);
 
-    // Scroll lock during transition
-    document.body.style.overflow = 'hidden';
-
-    // Exit animation for current page
-    if (this._currentPage) {
-      await this._exitPage();
+    /* Animation de sortie de la page courante */
+    if (this._pageCourante) {
+      await this._animerSortie();
     }
 
-    // Load and render new page
+    /* Charger et monter la nouvelle page */
     try {
-      const pageModule = await match.route.component();
-      const title = match.route.title || 'GnoLab Portfolio';
-      document.title = title;
-
-      await this._enterPage(pageModule, match.params);
+      const module = await correspondance.route.component();
+      if (correspondance.route.title) {
+        document.title = correspondance.route.title;
+      }
+      await this._animerEntree(module, correspondance.params);
     } catch (err) {
-      console.error('Router: page load failed', err);
+      console.error('Router: échec du chargement de la page', err);
     }
 
-    // Restore scroll
-    document.body.style.overflow = '';
+    /* Remonter en haut de page après navigation */
     window.scrollTo(0, 0);
 
-    this._isTransitioning = false;
+    this._enTransition = false;
   }
 
   /**
-   * Animate out and destroy current page
+   * Anime la sortie de la page courante et la détruit
    */
-  async _exitPage() {
-    if (!this._outlet.firstElementChild) return;
-
+  async _animerSortie() {
     const el = this._outlet.firstElementChild;
+    if (!el) return;
+
+    /* Déclencher l'animation CSS de sortie */
     el.classList.add('page-exit');
 
-    // Call page destroy hook if present
-    this._currentPage?.destroy?.();
+    /* Appeler le hook de nettoyage de la page */
+    this._pageCourante?.destroy?.();
 
-    await wait(200); // match page-exit animation duration
+    /* Attendre la fin de l'animation */
+    await new Promise(r => setTimeout(r, DUREE_SORTIE));
+
     el.remove();
-    this._currentPage = null;
+    this._pageCourante = null;
   }
 
   /**
-   * Render new page with enter animation
-   * @param {Object} pageModule
-   * @param {Object} params  route params (e.g. { slug: 'my-project' })
+   * Monte la nouvelle page avec animation d'entrée
+   * @param {Object} module  — module ES importé dynamiquement
+   * @param {Object} params  — paramètres de route (ex: { slug: 'mon-projet' })
    */
-  async _enterPage(pageModule, params = {}) {
-    // Create wrapper
+  async _animerEntree(module, params = {}) {
+    /* Créer le wrapper de page */
     const wrapper = document.createElement('div');
     wrapper.classList.add('page-enter');
 
     this._outlet.appendChild(wrapper);
 
-    // Mount page
-    if (typeof pageModule.mount === 'function') {
-      this._currentPage = await pageModule.mount(wrapper, params);
-    } else if (typeof pageModule.default === 'function') {
-      this._currentPage = await pageModule.default(wrapper, params);
+    /* Monter la page (chercher export mount ou default) */
+    if (typeof module.mount === 'function') {
+      this._pageCourante = await module.mount(wrapper, params);
+    } else if (typeof module.default === 'function') {
+      this._pageCourante = await module.default(wrapper, params);
     }
   }
 
   /**
-   * Match a path against registered routes
-   * @param {string} path
-   * @returns {{ route: Route, params: Object }|null}
+   * Recherche la route correspondant à un chemin donné
+   * Supporte les paramètres dynamiques (:slug, :id, etc.)
+   * @param {string} chemin
+   * @returns {{ route: Object, params: Object }|null}
    */
-  _matchRoute(path) {
+  _trouverRoute(chemin) {
     for (const route of this._routes) {
-      const result = this._testRoute(route.path, path);
-      if (result !== null) {
-        return { route, params: result };
+      const resultat = this._testerRoute(route.path, chemin);
+      if (resultat !== null) {
+        return { route, params: resultat };
       }
     }
     return null;
   }
 
   /**
-   * Test a route pattern against a path
-   * Supports: '/projects/:slug' pattern syntax
+   * Teste un pattern de route contre un chemin réel
+   * Supporte la syntaxe ':parametre' pour les segments dynamiques
    * @param {string|RegExp} pattern
-   * @param {string} path
-   * @returns {Object|null}  params object or null
+   * @param {string} chemin
+   * @returns {Object|null} — params extraits, ou null si pas de correspondance
    */
-  _testRoute(pattern, path) {
+  _testerRoute(pattern, chemin) {
+    /* Regex passée directement */
     if (pattern instanceof RegExp) {
-      const m = path.match(pattern);
-      return m ? m.groups ?? {} : null;
+      const m = chemin.match(pattern);
+      return m ? (m.groups ?? {}) : null;
     }
 
-    // Convert path pattern to regex
-    const paramNames = [];
-    const regexStr = pattern
+    /* Convertir le pattern texte en regex */
+    const nomsParams = [];
+    const regexStr   = pattern
       .replace(/\//g, '\\/')
-      .replace(/:([a-zA-Z_][a-zA-Z0-9_]*)/g, (_, name) => {
-        paramNames.push(name);
+      .replace(/:([a-zA-Z_][a-zA-Z0-9_]*)/g, (_, nom) => {
+        nomsParams.push(nom);
         return '([^\\/]+)';
       });
 
     const regex = new RegExp(`^${regexStr}$`);
-    const match = path.match(regex);
+    const match = chemin.match(regex);
     if (!match) return null;
 
+    /* Construire l'objet params */
     const params = {};
-    paramNames.forEach((name, i) => {
-      params[name] = decodeURIComponent(match[i + 1]);
+    nomsParams.forEach((nom, i) => {
+      params[nom] = decodeURIComponent(match[i + 1]);
     });
 
     return params;
   }
 }
 
-/* ── Singleton ── */
+/* ── Instance singleton ── */
 const router = new Router();
-
 export default router;
