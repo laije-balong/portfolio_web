@@ -29,7 +29,7 @@ function buildHTML() {
         <div class="container">
           <div class="ct-page-label">Contact</div>
           <h2 class="ct-title">Travaillons ensemble</h2>
-          <p class="ct-subtitle">Un projet de data, une question, ou juste envie d'echanger — je reponds sous 24h.</p>
+          <p class="ct-subtitle">Un projet, une question, ou juste envie d'echanger, je reponds sous 24h.</p>
         </div>
       </div>
 
