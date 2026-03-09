@@ -100,7 +100,7 @@ function htmlHero() {
 
 /* ════════════════════════════════════════
    SECTION STATS — chiffres clés animés
-   
+   ════════════════════════════════════════ */
 const STATS = [
   { valeur: 5,   suffixe: '+',  label: 'Projets livrés',       couleur: 'var(--c-cyan)'   },
   { valeur: 23,  suffixe: '%',  label: 'Réduction coûts stocks', couleur: 'var(--c-violet)' },
@@ -127,7 +127,6 @@ function htmlStats() {
     </section>
   `;
 }
-  ════════════════════════════════════════ */
 
 /* ════════════════════════════════════════
    SECTION PROJETS — aperçu 3 projets
@@ -244,11 +243,74 @@ function htmlApercuProjets(projets) {
 /* ════════════════════════════════════════
    SECTION COMPÉTENCES — aperçu rapide
    ════════════════════════════════════════ */
+/* SVG inline — thème data, stroke propre, aucun emoji */
+const SVG_ICONES = {
+  /* Barres de données — Analyse exploratoire */
+  barres: `<svg width="32" height="32" viewBox="0 0 32 32" fill="none"
+      stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="4" y1="28" x2="28" y2="28"/>
+    <rect x="6"  y="16" width="4" height="12" rx="1" fill="currentColor" opacity=".2" stroke-width="1.2"/>
+    <rect x="13" y="10" width="4" height="18" rx="1" fill="currentColor" opacity=".2" stroke-width="1.2"/>
+    <rect x="20" y="4"  width="4" height="24" rx="1" fill="currentColor" opacity=".2" stroke-width="1.2"/>
+    <polyline points="8,15 15,9 22,3" opacity=".7"/>
+    <circle cx="22" cy="3" r="1.5" fill="currentColor"/>
+  </svg>`,
+
+  /* Réseau neuronal — Machine Learning */
+  neurone: `<svg width="32" height="32" viewBox="0 0 32 32" fill="none"
+      stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+    <circle cx="6"  cy="10" r="2.5" fill="currentColor" opacity=".25"/>
+    <circle cx="6"  cy="22" r="2.5" fill="currentColor" opacity=".25"/>
+    <circle cx="16" cy="6"  r="2.5" fill="currentColor" opacity=".25"/>
+    <circle cx="16" cy="16" r="2.5" fill="currentColor" opacity=".35"/>
+    <circle cx="16" cy="26" r="2.5" fill="currentColor" opacity=".25"/>
+    <circle cx="26" cy="16" r="2.5" fill="currentColor" opacity=".6"/>
+    <line x1="8.5"  y1="10"  x2="13.5" y2="6.5"/>
+    <line x1="8.5"  y1="10"  x2="13.5" y2="16"/>
+    <line x1="8.5"  y1="10"  x2="13.5" y2="26"/>
+    <line x1="8.5"  y1="22"  x2="13.5" y2="6.5"/>
+    <line x1="8.5"  y1="22"  x2="13.5" y2="16"/>
+    <line x1="8.5"  y1="22"  x2="13.5" y2="26"/>
+    <line x1="18.5" y1="6.5" x2="23.5" y2="16"/>
+    <line x1="18.5" y1="16"  x2="23.5" y2="16"/>
+    <line x1="18.5" y1="26"  x2="23.5" y2="16"/>
+  </svg>`,
+
+  /* Courbe + points — Data Visualisation */
+  courbe: `<svg width="32" height="32" viewBox="0 0 32 32" fill="none"
+      stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 24 C8 24 10 8 16 10 C20 12 22 20 28 8" opacity=".9"/>
+    <circle cx="4"  cy="24" r="2" fill="currentColor" opacity=".5"/>
+    <circle cx="16" cy="10" r="2" fill="currentColor" opacity=".5"/>
+    <circle cx="28" cy="8"  r="2" fill="currentColor" opacity=".8"/>
+    <line x1="4" y1="28" x2="28" y2="28" opacity=".3"/>
+    <line x1="4" y1="4"  x2="4"  y2="28" opacity=".3"/>
+  </svg>`,
+
+  /* Pipeline — Data Engineering */
+  pipeline: `<svg width="32" height="32" viewBox="0 0 32 32" fill="none"
+      stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="2"  y="11" width="8"  height="10" rx="2" fill="currentColor" opacity=".15"/>
+    <rect x="12" y="11" width="8"  height="10" rx="2" fill="currentColor" opacity=".15"/>
+    <rect x="22" y="11" width="8"  height="10" rx="2" fill="currentColor" opacity=".15"/>
+    <line x1="10" y1="16" x2="12" y2="16"/>
+    <line x1="20" y1="16" x2="22" y2="16"/>
+    <polyline points="11,14 12,16 11,18" stroke-width="1.2"/>
+    <polyline points="21,14 22,16 21,18" stroke-width="1.2"/>
+    <line x1="6"  y1="8"  x2="6"  y2="11" opacity=".5"/>
+    <line x1="16" y1="8"  x2="16" y2="11" opacity=".5"/>
+    <line x1="26" y1="8"  x2="26" y2="11" opacity=".5"/>
+    <line x1="6"  y1="21" x2="6"  y2="24" opacity=".5"/>
+    <line x1="16" y1="21" x2="16" y2="24" opacity=".5"/>
+    <line x1="26" y1="21" x2="26" y2="24" opacity=".5"/>
+  </svg>`,
+};
+
 const COMPETENCES = [
-  { icone: '📊', titre: 'Analyse Exploratoire',   desc: 'SQL · Python · Pandas · Viz' },
-  { icone: '🤖', titre: 'Machine Learning',        desc: 'XGBoost · Scikit-learn · BERT' },
-  { icone: '📈', titre: 'Data Visualisation',     desc: 'D3.js · Power BI · Tableau · Grafana' },
-  { icone: '⚙️', titre: 'Data Engineering',       desc: 'ETL · InfluxDB · FastAPI · SQL Server' },
+  { svg: 'barres',   titre: 'Analyse Exploratoire', desc: 'SQL · Python · Pandas · Viz' },
+  { svg: 'neurone',  titre: 'Machine Learning',      desc: 'XGBoost · Scikit-learn · BERT' },
+  { svg: 'courbe',   titre: 'Data Visualisation',    desc: 'D3.js · Power BI · Tableau · Grafana' },
+  { svg: 'pipeline', titre: 'Data Engineering',      desc: 'ETL · InfluxDB · FastAPI · SQL Server' },
 ];
 
 function htmlCompetences() {
@@ -258,7 +320,9 @@ function htmlCompetences() {
         <div class="skills-grille">
           ${COMPETENCES.map((c, i) => `
             <div class="skill-item" data-reveal="fade-up" data-delay="${i * 60}">
-              <div class="skill-icone" aria-hidden="true">${c.icone}</div>
+              <div class="skill-icone" aria-hidden="true">
+                ${SVG_ICONES[c.svg]}
+              </div>
               <h4 class="skill-titre">${c.titre}</h4>
               <p  class="skill-desc">${c.desc}</p>
             </div>
@@ -327,7 +391,6 @@ function animerCompteur(el, target, suffixe, duree = 1500) {
   requestAnimationFrame(tick);
 }
 
-
 /**
  * Initialise l'IntersectionObserver sur les compteurs
  * Lance l'animation une fois que la section entre dans le viewport
@@ -374,7 +437,7 @@ export async function mount(container) {
   /* ── Construire tout le HTML ── */
   setHTML(container, [
     htmlHero(),
-    /* htmlStats(), a utiliser peut etre plus tard*/
+    htmlStats(),
     htmlApercuProjets(projets),
     htmlCompetences(),
     htmlCTA(),
