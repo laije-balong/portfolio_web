@@ -812,9 +812,26 @@
 }
 
 .skill-icone {
-  font-size: 2rem;
-  margin-bottom: 1rem;
-  display: block;
+  width: 48px;
+  height: 48px;
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: rgba(0,217,255,0.06);
+  border: 1px solid rgba(0,217,255,0.12);
+  color: var(--c-cyan);
+  transition: background 200ms ease, border-color 200ms ease, color 200ms ease;
+}
+
+.skill-item:hover .skill-icone {
+  background: rgba(0,217,255,0.1);
+  border-color: rgba(0,217,255,0.25);
+}
+
+.skill-icone svg {
+  flex-shrink: 0;
 }
 
 .skill-titre {
