@@ -79,7 +79,7 @@ function rendreCarte(projet, index) {
 
         <!-- CTA affiché au hover -->
         <div class="card-cta">
-          Voir l'analyse
+          Voir le projet
           ${ICONES.fleche}
         </div>
       </div>

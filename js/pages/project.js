@@ -11,6 +11,51 @@ import { MiniChart }  from '../charts/MiniChart.js';
 import { ScrollReveal }   from '../utils/scroll-reveal.js';
 import { ouvrirLightbox } from '../utils/lightbox.js';
 
+
+/* ── Mini-highlighter syntaxique (Python/JS) ──────────────────
+   Pas de dépendance externe. Tokenisation par regex ordonnée.
+   Couvre : mots-clés, strings, commentaires, nombres, fonctions.
+   ──────────────────────────────────────────────────────────── */
+function highlighter(code, lang = 'python') {
+  const KW_PY = /\b(def|class|return|import|from|as|if|elif|else|for|while|with|in|not|and|or|True|False|None|pass|raise|try|except|finally|yield|async|await|lambda)\b/g;
+  const KW_JS = /\b(const|let|var|function|return|import|export|from|if|else|for|while|of|in|new|class|extends|async|await|typeof|null|undefined|true|false)\b/g;
+  const KW    = lang === 'python' ? KW_PY : KW_JS;
+
+  /* Ordre important : commentaires et strings d'abord */
+  const RULES = [
+    [/#[^\n]*/g,                            'hl-comm'],   // # commentaire Python
+    [/\/\/[^\n]*/g,                         'hl-comm'],   // // commentaire JS
+    [/"""[\s\S]*?"""|'''[\s\S]*?'''/g, 'hl-str'],    // triple quotes
+    [/"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'/g, 'hl-str'],  // strings
+    [KW,                                     'hl-kw'],    // mots-clés
+    [/\b([A-Z][a-zA-Z0-9_]*)\b/g,           'hl-type'],  // Types / Classes
+    [/\b([a-z_][a-z0-9_]*)(?=\s*\()/g,     'hl-fn'],    // fonctions()
+    [/\b(\d+\.?\d*)\b/g,                  'hl-num'],   // nombres
+    [/@[\w.]+/g,                            'hl-deco'],  // @decorateurs
+  ];
+
+  /* Remplacer les tokens par des <span> avec classes CSS.
+     On travaille sur un tableau de segments pour éviter les
+     collisions de remplacement. */
+  const PLACEHOLDER = '\x00';
+  let result = code;
+
+  // Échapper le HTML d'abord
+  result = result
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+
+  // Appliquer chaque règle
+  RULES.forEach(([re, cls]) => {
+    result = result.replace(re, m =>
+      `<span class="${cls}">${m}</span>`
+    );
+  });
+
+  return result;
+}
+
 /* ── Icônes ──────────────────────────────────────────────────── */
 const ICONES = {
   retour: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5m0 0l7 7m-7-7 7-7"/></svg>`,
@@ -105,10 +150,28 @@ function construirePage(projet) {
 
           <!-- Section Preuves -->
           <section class="proj-section" data-reveal="fade-right" data-delay="80">
-            <div class="proj-section-label">03 — Preuves &amp; Code</div>
-            <h3 class="proj-section-titre">Résultats mesurables</h3>
+            <div class="proj-section-label">03 — Résultats</div>
+            <h3 class="proj-section-titre">Preuves mesurables</h3>
             <p class="proj-section-texte">${projet.proofs || 'Non renseigné.'}</p>
           </section>
+
+          <!-- Section Extrait de code -->
+          ${projet.snippet ? `
+          <section class="proj-section proj-section--code" data-reveal="fade-right" data-delay="100">
+            <div class="proj-section-label">04 — Extrait de code</div>
+            <h3 class="proj-section-titre">Implémentation</h3>
+            <div class="code-block">
+              <div class="code-block__bar">
+                <span class="code-block__dot"></span>
+                <span class="code-block__dot"></span>
+                <span class="code-block__dot"></span>
+                <span class="code-block__filename">${projet.snippet.filename}</span>
+                <span class="code-block__lang">${projet.snippet.lang}</span>
+              </div>
+              <pre class="code-block__pre"><code class="code-block__code">${highlighter(projet.snippet.code, projet.snippet.lang)}</code></pre>
+            </div>
+          </section>
+          ` : ''}
 
           <!-- Bouton certificat -->
           ${btnCertif ? `<div class="proj-certif-wrap" data-reveal="fade-up">${btnCertif}</div>` : ''}
