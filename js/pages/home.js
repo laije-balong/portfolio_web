@@ -62,13 +62,13 @@ function htmlHero() {
 
         <!-- Titre H1 -->
         <h1 class="hero-title" data-reveal="fade-up">
-          Les données<br>
-          <span class="gradient-text">racontent une histoire.</span>
+          Construire.<br>
+          <span class="gradient-text">Comprendre. Transmettre.</span>
         </h1>
 
         <p class="hero-subtitle" data-reveal="fade-up" data-delay="120">
-          Data Analyst — je transforme des données brutes en décisions
-          mesurables. Chaque projet est une enquête.
+          Développeur &amp; formateur — je construis des systèmes qui fonctionnent
+          et j'apprends aux autres à en faire de même.
         </p>
 
         <!-- Boutons d'action -->
@@ -100,7 +100,7 @@ function htmlHero() {
 
 /* ════════════════════════════════════════
    SECTION STATS — chiffres clés animés
-   ════════════════════════════════════════ */
+   
 const STATS = [
   { valeur: 5,   suffixe: '+',  label: 'Projets livrés',       couleur: 'var(--c-cyan)'   },
   { valeur: 23,  suffixe: '%',  label: 'Réduction coûts stocks', couleur: 'var(--c-violet)' },
@@ -127,6 +127,7 @@ function htmlStats() {
     </section>
   `;
 }
+  ════════════════════════════════════════ */
 
 /* ════════════════════════════════════════
    SECTION PROJETS — aperçu 3 projets
@@ -162,7 +163,7 @@ function htmlApercuProjets(projets) {
           </div>
           <h2 class="section-titre">Le Mur de Preuves</h2>
           <p class="section-sous-titre">
-            Chaque projet est une analyse complète : problème, méthode, résultats mesurables.
+            Chaque projet : un problème concret, une implémentation soignée, une leçon retenue.
           </p>
         </div>
 
@@ -209,7 +210,7 @@ function htmlApercuProjets(projets) {
 
                 <!-- CTA hover -->
                 <div class="apercu-cta" aria-hidden="true">
-                  Voir l'analyse
+                  Voir le projet
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
                        stroke="currentColor" stroke-width="2.5"
                        stroke-linecap="round" stroke-linejoin="round">
@@ -243,74 +244,62 @@ function htmlApercuProjets(projets) {
 /* ════════════════════════════════════════
    SECTION COMPÉTENCES — aperçu rapide
    ════════════════════════════════════════ */
-/* SVG inline — thème data, stroke propre, aucun emoji */
-const SVG_ICONES = {
-  /* Barres de données — Analyse exploratoire */
-  barres: `<svg width="32" height="32" viewBox="0 0 32 32" fill="none"
+/* SVG inline — tracé à la main, cohérent avec l'identité dev/formateur */
+const ICONES_SVG = {
+  /* Fenêtre de code — Développement */
+  code: `<svg width="30" height="30" viewBox="0 0 32 32" fill="none"
       stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-    <line x1="4" y1="28" x2="28" y2="28"/>
-    <rect x="6"  y="16" width="4" height="12" rx="1" fill="currentColor" opacity=".2" stroke-width="1.2"/>
-    <rect x="13" y="10" width="4" height="18" rx="1" fill="currentColor" opacity=".2" stroke-width="1.2"/>
-    <rect x="20" y="4"  width="4" height="24" rx="1" fill="currentColor" opacity=".2" stroke-width="1.2"/>
-    <polyline points="8,15 15,9 22,3" opacity=".7"/>
-    <circle cx="22" cy="3" r="1.5" fill="currentColor"/>
+    <rect x="2" y="4" width="28" height="22" rx="3"/>
+    <path d="M2 10h28" stroke-width="1.4"/>
+    <circle cx="7"  cy="7" r="1.2" fill="currentColor" opacity=".5"/>
+    <circle cx="11" cy="7" r="1.2" fill="currentColor" opacity=".5"/>
+    <circle cx="15" cy="7" r="1.2" fill="currentColor" opacity=".5"/>
+    <polyline points="9,16 12,19 9,22" stroke-width="1.8"/>
+    <line x1="15" y1="22" x2="22" y2="22" opacity=".6"/>
   </svg>`,
 
-  /* Réseau neuronal — Machine Learning */
-  neurone: `<svg width="32" height="32" viewBox="0 0 32 32" fill="none"
-      stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
-    <circle cx="6"  cy="10" r="2.5" fill="currentColor" opacity=".25"/>
-    <circle cx="6"  cy="22" r="2.5" fill="currentColor" opacity=".25"/>
-    <circle cx="16" cy="6"  r="2.5" fill="currentColor" opacity=".25"/>
-    <circle cx="16" cy="16" r="2.5" fill="currentColor" opacity=".35"/>
-    <circle cx="16" cy="26" r="2.5" fill="currentColor" opacity=".25"/>
-    <circle cx="26" cy="16" r="2.5" fill="currentColor" opacity=".6"/>
-    <line x1="8.5"  y1="10"  x2="13.5" y2="6.5"/>
-    <line x1="8.5"  y1="10"  x2="13.5" y2="16"/>
-    <line x1="8.5"  y1="10"  x2="13.5" y2="26"/>
-    <line x1="8.5"  y1="22"  x2="13.5" y2="6.5"/>
-    <line x1="8.5"  y1="22"  x2="13.5" y2="16"/>
-    <line x1="8.5"  y1="22"  x2="13.5" y2="26"/>
-    <line x1="18.5" y1="6.5" x2="23.5" y2="16"/>
-    <line x1="18.5" y1="16"  x2="23.5" y2="16"/>
-    <line x1="18.5" y1="26"  x2="23.5" y2="16"/>
+  /* Cube réseau — Systèmes & Infrastructure */
+  cube: `<svg width="30" height="30" viewBox="0 0 32 32" fill="none"
+      stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M16 3 L28 10 L28 22 L16 29 L4 22 L4 10 Z"/>
+    <path d="M16 3 L16 29" opacity=".4"/>
+    <path d="M4 10 L28 10" opacity=".4"/>
+    <path d="M4 22 L16 16 L28 22" opacity=".4"/>
+    <circle cx="16" cy="16" r="2.5" fill="currentColor" opacity=".3"/>
   </svg>`,
 
-  /* Courbe + points — Data Visualisation */
-  courbe: `<svg width="32" height="32" viewBox="0 0 32 32" fill="none"
+  /* Cerveau / graphe — Algorithmique */
+  graphe: `<svg width="30" height="30" viewBox="0 0 32 32" fill="none"
       stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M4 24 C8 24 10 8 16 10 C20 12 22 20 28 8" opacity=".9"/>
-    <circle cx="4"  cy="24" r="2" fill="currentColor" opacity=".5"/>
-    <circle cx="16" cy="10" r="2" fill="currentColor" opacity=".5"/>
-    <circle cx="28" cy="8"  r="2" fill="currentColor" opacity=".8"/>
-    <line x1="4" y1="28" x2="28" y2="28" opacity=".3"/>
-    <line x1="4" y1="4"  x2="4"  y2="28" opacity=".3"/>
+    <circle cx="16" cy="5"  r="3" fill="currentColor" opacity=".2"/>
+    <circle cx="5"  cy="20" r="3" fill="currentColor" opacity=".2"/>
+    <circle cx="27" cy="20" r="3" fill="currentColor" opacity=".2"/>
+    <circle cx="16" cy="27" r="3" fill="currentColor" opacity=".35"/>
+    <line x1="16" y1="8"  x2="5"  y2="17"/>
+    <line x1="16" y1="8"  x2="27" y2="17"/>
+    <line x1="5"  y1="23" x2="16" y2="24"/>
+    <line x1="27" y1="23" x2="16" y2="24"/>
+    <line x1="5"  y1="20" x2="27" y2="20" opacity=".3"/>
   </svg>`,
 
-  /* Pipeline — Data Engineering */
-  pipeline: `<svg width="32" height="32" viewBox="0 0 32 32" fill="none"
+  /* Tableau + pointeur — Formation */
+  tableau: `<svg width="30" height="30" viewBox="0 0 32 32" fill="none"
       stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-    <rect x="2"  y="11" width="8"  height="10" rx="2" fill="currentColor" opacity=".15"/>
-    <rect x="12" y="11" width="8"  height="10" rx="2" fill="currentColor" opacity=".15"/>
-    <rect x="22" y="11" width="8"  height="10" rx="2" fill="currentColor" opacity=".15"/>
-    <line x1="10" y1="16" x2="12" y2="16"/>
-    <line x1="20" y1="16" x2="22" y2="16"/>
-    <polyline points="11,14 12,16 11,18" stroke-width="1.2"/>
-    <polyline points="21,14 22,16 21,18" stroke-width="1.2"/>
-    <line x1="6"  y1="8"  x2="6"  y2="11" opacity=".5"/>
-    <line x1="16" y1="8"  x2="16" y2="11" opacity=".5"/>
-    <line x1="26" y1="8"  x2="26" y2="11" opacity=".5"/>
-    <line x1="6"  y1="21" x2="6"  y2="24" opacity=".5"/>
-    <line x1="16" y1="21" x2="16" y2="24" opacity=".5"/>
-    <line x1="26" y1="21" x2="26" y2="24" opacity=".5"/>
+    <rect x="2" y="4" width="28" height="18" rx="2"/>
+    <line x1="16" y1="22" x2="16" y2="28"/>
+    <line x1="10" y1="28" x2="22" y2="28"/>
+    <line x1="7"  y1="10" x2="14" y2="10" opacity=".7"/>
+    <line x1="7"  y1="14" x2="18" y2="14" opacity=".5"/>
+    <circle cx="22" cy="11" r="3.5" fill="currentColor" opacity=".15"/>
+    <path d="M20 11 L22 13 L25 8" stroke-width="1.8" opacity=".8"/>
   </svg>`,
 };
 
 const COMPETENCES = [
-  { svg: 'barres',   titre: 'Analyse Exploratoire', desc: 'SQL · Python · Pandas · Viz' },
-  { svg: 'neurone',  titre: 'Machine Learning',      desc: 'XGBoost · Scikit-learn · BERT' },
-  { svg: 'courbe',   titre: 'Data Visualisation',    desc: 'D3.js · Power BI · Tableau · Grafana' },
-  { svg: 'pipeline', titre: 'Data Engineering',      desc: 'ETL · InfluxDB · FastAPI · SQL Server' },
+  { svg: 'code',    titre: 'Développement',             desc: 'Web · Python · JavaScript · APIs' },
+  { svg: 'cube',    titre: 'Systèmes & Réseaux',        desc: 'Linux · CLI · Réseaux · Sécurité' },
+  { svg: 'graphe',  titre: 'Algorithmique & Données',   desc: 'Structures · SQL · Modèles · Logique' },
+  { svg: 'tableau', titre: 'Formation & Pédagogie',     desc: 'Cours · Ateliers · Projets guidés' },
 ];
 
 function htmlCompetences() {
@@ -321,7 +310,7 @@ function htmlCompetences() {
           ${COMPETENCES.map((c, i) => `
             <div class="skill-item" data-reveal="fade-up" data-delay="${i * 60}">
               <div class="skill-icone" aria-hidden="true">
-                ${SVG_ICONES[c.svg]}
+                ${ICONES_SVG[c.svg]}
               </div>
               <h4 class="skill-titre">${c.titre}</h4>
               <p  class="skill-desc">${c.desc}</p>
@@ -343,14 +332,14 @@ function htmlCTA() {
         <div class="cta-final-inner" data-reveal="scale">
           <div class="cta-final-label">
             <span class="section-dot" aria-hidden="true"></span>
-            Disponible pour projets
+            Disponible · Ouvert aux collaborations
           </div>
           <h2 class="cta-final-titre">
-            Vous avez des données.<br>
-            <span class="gradient-text">Construisons la suite ensemble.</span>
+            Une idée, un projet, un cours —<br>
+            <span class="gradient-text">construisons-le ensemble.</span>
           </h2>
           <p class="cta-final-sous">
-            Analyse, modélisation, visualisation — discutons de votre projet.
+            Développement, automatisation, formation — discutons.
           </p>
           <div class="cta-final-btns">
             <button class="hero-btn hero-btn--primary" id="btn-contact-final">
@@ -391,6 +380,7 @@ function animerCompteur(el, target, suffixe, duree = 1500) {
   requestAnimationFrame(tick);
 }
 
+
 /**
  * Initialise l'IntersectionObserver sur les compteurs
  * Lance l'animation une fois que la section entre dans le viewport
@@ -423,7 +413,7 @@ function initCompteurs(container) {
  * @returns {{ destroy(): void }}
  */
 export async function mount(container) {
-  document.title = 'GnoLab — Portfolio Data Analyst';
+  document.title = 'GnoLab — Développeur & Formateur';
 
   /* ── Charger les projets pour le teaser ── */
   let projets = [];
@@ -437,7 +427,7 @@ export async function mount(container) {
   /* ── Construire tout le HTML ── */
   setHTML(container, [
     htmlHero(),
-    htmlStats(),
+    /* htmlStats(), a utiliser peut etre plus tard*/
     htmlApercuProjets(projets),
     htmlCompetences(),
     htmlCTA(),

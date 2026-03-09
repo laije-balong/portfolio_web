@@ -153,75 +153,48 @@
 }
 
 /* ── GLITCH SLICES ── */
-.ab-glitch-slice {
+/* ── Scan beam — remplace le glitch ───────────────────────────
+   Une ligne de lumière qui descend au hover.
+   Propre, lisible, cohérent avec l'esthétique terminal.
+   ──────────────────────────────────────────────────────── */
+
+.ab-scan-beam {
   position: absolute;
   left: 0; right: 0;
-  z-index: 7;
+  top: -4px;                      /* démarre juste au-dessus */
+  height: 3px;
+  z-index: 8;
   pointer-events: none;
-  overflow: hidden;
-  opacity: 0;
-  /* Screen pour ne pas couvrir la photo, juste teinter */
-  mix-blend-mode: screen;
-}
-
-/* Positionnement en haut et en bas — évite la zone du visage (centre) */
-.ab-glitch-slice--1 { top:  4%; height: 6%; }
-.ab-glitch-slice--2 { top: 75%; height: 5%; }
-.ab-glitch-slice--3 { top: 88%; height: 4%; }
-
-/* Trait de couleur en overlay — ne floute rien */
-.ab-glitch-slice--1::after,
-.ab-glitch-slice--2::after,
-.ab-glitch-slice--3::after {
-  content: '';
-  position: absolute;
-  inset: 0;
   background: linear-gradient(90deg,
-    rgba(0,217,255,0.18) 0%,
-    transparent 50%,
-    rgba(139,92,246,0.12) 100%
+    transparent 0%,
+    rgba(0,217,255,0.6) 30%,
+    rgba(0,217,255,0.9) 50%,
+    rgba(0,217,255,0.6) 70%,
+    transparent 100%
   );
+  box-shadow: 0 0 12px 2px rgba(0,217,255,0.35),
+              0 0 4px  1px rgba(0,217,255,0.5);
+  opacity: 0;
+  /* La ligne descend sur toute la hauteur (340px) */
+  --scan-h: 340px;
 }
 
-/* État actif — déclenché par JS au hover et auto toutes les 7s */
-.ab-photo-wrap.is-glitching .ab-glitch-slice--1 {
-  animation: glitch-1 0.45s steps(2) forwards;
-}
-.ab-photo-wrap.is-glitching .ab-glitch-slice--2 {
-  animation: glitch-2 0.35s steps(3) 0.06s forwards;
-}
-.ab-photo-wrap.is-glitching .ab-glitch-slice--3 {
-  animation: glitch-3 0.3s  steps(2) 0.12s forwards;
+/* Activation au hover — animation CSS pure */
+.ab-photo-wrap:hover .ab-scan-beam {
+  animation: scan-descend 1.4s cubic-bezier(0.4, 0, 0.6, 1) forwards;
 }
 
-/* Décalage horizontal uniquement — la photo reste lisible */
-@keyframes glitch-1 {
-  0%   { opacity: 0; transform: translateX(0); }
-  30%  { opacity: 0.7; transform: translateX(-10px); }
-  60%  { opacity: 0.5; transform: translateX(8px); }
-  100% { opacity: 0;   transform: translateX(0); }
+@keyframes scan-descend {
+  0%   { opacity: 0;   top: -4px; }
+  8%   { opacity: 1;   top: -4px; }        /* apparition nette */
+  85%  { opacity: 0.8; top: calc(var(--scan-h) + 4px); }
+  100% { opacity: 0;   top: calc(var(--scan-h) + 4px); }
 }
 
-@keyframes glitch-2 {
-  0%   { opacity: 0; transform: translateX(0); }
-  40%  { opacity: 0.6; transform: translateX(12px); }
-  80%  { opacity: 0.4; transform: translateX(-5px); }
-  100% { opacity: 0;   transform: translateX(0); }
-}
-
-@keyframes glitch-3 {
-  0%   { opacity: 0; transform: translateX(0); }
-  50%  { opacity: 0.7; transform: translateX(7px); }
-  100% { opacity: 0;   transform: translateX(0); }
-}
-
-/* Légère teinte cyan sur la photo au hover (pas de flou) */
-.ab-photo-img {
-  transition: filter 300ms ease;
-}
-.ab-photo-wrap:hover .ab-photo-img,
-.ab-photo-wrap.is-glitching .ab-photo-img {
-  filter: saturate(1.15) hue-rotate(5deg) brightness(1.03);
+/* Teinte douce sur la photo pendant le scan */
+.ab-photo-wrap:hover .ab-photo-img {
+  filter: brightness(1.04) saturate(1.1);
+  transition: filter 400ms ease;
 }
 
 /* ────────────────────────────────────────
@@ -484,14 +457,10 @@
   color: var(--c-text-secondary);
   letter-spacing: 0.03em;
   text-decoration: none;
-  transition:
-    background  180ms ease,
-    border-color 180ms ease,
-    color        180ms ease,
-    transform    180ms ease;
+  transition: background 180ms ease, border-color 180ms ease,
+              color 180ms ease, transform 180ms ease;
 }
 
-/* Pill certifiée — cliquable */
 .ab-pill--cert {
   cursor: pointer;
   border-color: color-mix(in srgb, var(--pill-color) 30%, transparent);
@@ -504,7 +473,6 @@
   transform: translateY(-1px);
 }
 
-/* Icône certificat dans la pill */
 .ab-pill-cert-ico {
   display: flex;
   align-items: center;
@@ -514,7 +482,6 @@
 }
 .ab-pill--cert:hover .ab-pill-cert-ico { opacity: 1; }
 
-/* Point de couleur */
 .ab-pill-dot {
   width: 6px;
   height: 6px;
@@ -550,4 +517,23 @@
 
 [data-theme="light"] .ab-status-badge {
   background: #fff;
+}
+[data-theme="light"] .ab-pill {
+  background: rgba(0,0,0,0.03);
+  border-color: rgba(0,0,0,0.1);
+  color: #475569;
+}
+[data-theme="light"] .ab-pill--cert:hover {
+  background: color-mix(in srgb, var(--pill-color) 8%, transparent);
+  color: #0f172a;
+}
+[data-theme="light"] .ab-scan-beam {
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(0,116,217,0.5) 30%,
+    rgba(0,116,217,0.8) 50%,
+    rgba(0,116,217,0.5) 70%,
+    transparent 100%
+  );
+  box-shadow: 0 0 12px 2px rgba(0,116,217,0.25);
 }

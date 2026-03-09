@@ -1,7 +1,6 @@
 # GnoLab — Plan Backend Complet
 > Stack · Architecture · Dashboard Admin · Blog · Feuille de route pédagogique
 
----
 
 ## 1. Pourquoi ce choix de stack
 
@@ -9,8 +8,8 @@
 
 **Le raisonnement central : tu écris déjà du JavaScript.**
 
-Tu n'as pas besoin d'apprendre une deuxième langue pour écrire le backend.
-Le même cerveau, les mêmes réflexes — juste un nouvel environnement.
+pas besoin d'apprendre une deuxième langue pour écrire le backend.
+Le même cerveau, les mêmes réflexes juste un nouvel environnement.
 
 ```
 Frontend  →  JavaScript (navigateur)
@@ -18,21 +17,6 @@ Backend   →  JavaScript (Node.js, sur le serveur)
 Base de   →  SQLite (un fichier .db sur le disque)
 données
 ```
-
-### Comparaison honnête des alternatives
-
-| Stack | Apprentissage | Puissance | Adapté ici ? |
-|-------|--------------|-----------|--------------|
-| **Node.js + Express** | ⭐⭐⭐ Facile si tu fais du JS | ⭐⭐⭐⭐ Très capable | ✅ **Recommandé** |
-| Python + FastAPI | ⭐⭐ Nouvelle langue | ⭐⭐⭐⭐⭐ Excellent | ⚠️ Courbe d'apprentissage |
-| PHP + Laravel | ⭐⭐ Ancienne syntaxe | ⭐⭐⭐ Correct | ❌ Pas cohérent avec le projet |
-| Go / Rust | ⭐ Difficile | ⭐⭐⭐⭐⭐ Très performant | ❌ Trop avancé pour débuter |
-| Firebase / Supabase | ⭐⭐⭐⭐ Très facile | ⭐⭐⭐ Limité | ⚠️ On ne code pas vraiment |
-
-**Conclusion** : Node.js + Express te permet de comprendre ce que tu construis,
-ligne par ligne, sans magie cachée. C'est exactement ce qu'on veut.
-
----
 
 ## 2. Architecture globale du projet
 
@@ -94,9 +78,9 @@ gnolab-api/                ← NOUVEAU — Backend Express
 
 ### SQLite — Pourquoi c'est parfait pour débuter
 
-- **Un seul fichier** : `gnolab.db` — tu peux l'ouvrir avec DB Browser for SQLite
+- **Un seul fichier** : `gnolab.db` ouvrir avec DB Browser for SQLite
 - **Zéro installation** : pas de serveur PostgreSQL à configurer, pas de Docker
-- **Portable** : tu peux copier le fichier et le partager
+- **Portable** : possibilité de copier le fichier et le partager
 - **Migrer plus tard** : quand tu seras à l'aise, passer à PostgreSQL est simple
 
 ### Schéma complet
