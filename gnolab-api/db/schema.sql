@@ -27,6 +27,7 @@ CREATE TABLE IF NOT EXISTS projects (
   cover       TEXT,               -- chemin : "/uploads/covers/stock.jpg"
   certificate TEXT,               -- chemin ou NULL
   certified   INTEGER  NOT NULL DEFAULT 0,   -- 0 = false, 1 = true
+  snippet     TEXT,               -- JSON objet : {lang, filename, code}
   sort_order  INTEGER  NOT NULL DEFAULT 0,
   published   INTEGER  NOT NULL DEFAULT 1,   -- 0 = brouillon, 1 = publié
   created_at  DATETIME DEFAULT CURRENT_TIMESTAMP,

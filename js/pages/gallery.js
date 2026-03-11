@@ -232,11 +232,11 @@ async function chargerProjets() {
   const cache = store.get('projects');
   if (cache?.length) return cache;
 
-  const reponse = await fetch('/data/projects.json');
-  if (!reponse.ok) throw new Error(`Erreur HTTP ${reponse.status}`);
-  const donnees = await reponse.json();
-  store.set('projects', donnees);
-  return donnees;
+const reponse = await fetch('http://localhost:3001/api/projects');
+if (!reponse.ok) throw new Error(`Erreur HTTP ${reponse.status}`);
+const donnees = await reponse.json();
+store.set('projects', donnees);
+return donnees;
 }
 
 /* ── Navigation FLIP vers un projet ─────────────────────────── */

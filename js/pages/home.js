@@ -418,8 +418,8 @@ export async function mount(container) {
   /* ── Charger les projets pour le teaser ── */
   let projets = [];
   try {
-    const rep  = await fetch('/data/projects.json');
-    projets    = await rep.json();
+   const rep  = await fetch('http://localhost:3001/api/projects');
+   projets    = await rep.json();
   } catch (_) {
     /* Graceful degradation : le teaser affichera un état vide */
   }

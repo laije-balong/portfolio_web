@@ -10,7 +10,8 @@ function parseProject(p) {
   if (!p) return null;
   return {
     ...p,
-    tools:     p.tools     ? JSON.parse(p.tools)     : [],
+    tools:     p.tools   ? JSON.parse(p.tools)   : [],
+    snippet:   p.snippet ? JSON.parse(p.snippet) : null,
     certified: Boolean(p.certified),
     published: Boolean(p.published),
   };
@@ -51,7 +52,7 @@ router.get('/:slug', (req, res, next) => {
 // Protégé — créer un nouveau projet
 router.post('/', authGuard, (req, res, next) => {
   try {
-    const { title, excerpt, challenge, solution, proofs, tools, cover, certificate, certified, sort_order, published } = req.body;
+    const { title, excerpt, challenge, solution, proofs, tools, snippet, cover, certificate, certified, sort_order, published } = req.body;
 
     if (!title) {
       return res.status(400).json({ error: 'Le champ title est requis.' });
@@ -68,9 +69,9 @@ router.post('/', authGuard, (req, res, next) => {
 
     const stmt = db.prepare(`
       INSERT INTO projects
-        (slug, title, excerpt, challenge, solution, proofs, tools, cover, certificate, certified, sort_order, published)
+        (slug, title, excerpt, challenge, solution, proofs, tools, snippet, cover, certificate, certified, sort_order, published)
       VALUES
-        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `);
 
     const result = stmt.run(
@@ -80,7 +81,8 @@ router.post('/', authGuard, (req, res, next) => {
       challenge   || null,
       solution    || null,
       proofs      || null,
-      tools       ? JSON.stringify(tools) : null,
+      tools       ? JSON.stringify(tools)    : null,
+      snippet     ? JSON.stringify(snippet)  : null,
       cover       || null,
       certificate || null,
       certified   ? 1 : 0,
@@ -100,7 +102,7 @@ router.post('/', authGuard, (req, res, next) => {
 // Protégé — modifier un projet
 router.put('/:id', authGuard, (req, res, next) => {
   try {
-    const { title, excerpt, challenge, solution, proofs, tools, cover, certificate, certified, sort_order, published } = req.body;
+    const { title, excerpt, challenge, solution, proofs, tools, snippet, cover, certificate, certified, sort_order, published } = req.body;
 
     const project = db.prepare('SELECT * FROM projects WHERE id = ?').get(req.params.id);
     if (!project) {
@@ -110,7 +112,7 @@ router.put('/:id', authGuard, (req, res, next) => {
     const stmt = db.prepare(`
       UPDATE projects SET
         title = ?, excerpt = ?, challenge = ?, solution = ?,
-        proofs = ?, tools = ?, cover = ?, certificate = ?,
+        proofs = ?, tools = ?, snippet = ?, cover = ?, certificate = ?,
         certified = ?, sort_order = ?, published = ?
       WHERE id = ?
     `);
@@ -121,7 +123,8 @@ router.put('/:id', authGuard, (req, res, next) => {
       challenge   ?? project.challenge,
       solution    ?? project.solution,
       proofs      ?? project.proofs,
-      tools !== undefined ? JSON.stringify(tools) : project.tools,
+      tools !== undefined    ? JSON.stringify(tools)    : project.tools,
+      snippet !== undefined  ? JSON.stringify(snippet)  : project.snippet,
       cover       ?? project.cover,
       certificate ?? project.certificate,
       certified !== undefined ? (certified ? 1 : 0) : project.certified,
@@ -169,14 +172,17 @@ router.patch('/reorder', authGuard, (req, res, next) => {
 
     const stmt = db.prepare('UPDATE projects SET sort_order = ? WHERE id = ?');
 
-    // Transaction pour appliquer tous les changements en une seule fois
-    const updateAll = db.transaction((list) => {
-      for (const item of list) {
+    // Transaction manuelle (node:sqlite ne supporte pas db.transaction())
+    db.exec('BEGIN');
+    try {
+      for (const item of items) {
         stmt.run(item.order, item.id);
       }
-    });
-
-    updateAll(items);
+      db.exec('COMMIT');
+    } catch (e) {
+      db.exec('ROLLBACK');
+      throw e;
+    }
     res.json({ success: true });
 
   } catch (err) {

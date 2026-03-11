@@ -83,12 +83,10 @@ async function chargerProjet(slug) {
   const trouve = cache.find(p => p.slug === slug);
   if (trouve) return trouve;
 
-  /* Sinon charger depuis le JSON */
-  const reponse = await fetch('/data/projects.json');
+  /* Sinon appeler directement l'endpoint par slug */
+  const reponse = await fetch(`http://localhost:3001/api/projects/${slug}`);
   if (!reponse.ok) throw new Error(`HTTP ${reponse.status}`);
-  const liste = await reponse.json();
-  store.set('projects', liste);
-  return liste.find(p => p.slug === slug) || null;
+  return await reponse.json();
 }
 
 /* ── Construction du HTML de la page ────────────────────────── */
