@@ -266,6 +266,11 @@ function initRouter() {
         component: () => import('./pages/contact.js'),
       },
       {
+        path: '/admin',
+        title: 'Admin · GnoLab',
+        component: () => import('./pages/admin.js'),
+      },
+      {
         path: '/404',
         title: '404 · GnoLab',
         component: () => import('./pages/notfound.js'),
