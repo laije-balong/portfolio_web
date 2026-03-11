@@ -84,7 +84,7 @@ async function chargerProjet(slug) {
   if (trouve) return trouve;
 
   /* Sinon appeler directement l'endpoint par slug */
-  const reponse = await fetch(`http://localhost:3001/api/projects/${slug}`);
+  const reponse = await fetch(`${API_URL}/api/projects/${slug}`);
   if (!reponse.ok) throw new Error(`HTTP ${reponse.status}`);
   return await reponse.json();
 }
