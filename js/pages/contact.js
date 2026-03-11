@@ -18,7 +18,7 @@ const ICONS = {
 const SOCIALS = [
   { label: 'GitHub',   icon: ICONS.github,   href: 'https://github.com/',     color: '#f1f5f9' },
   { label: 'LinkedIn', icon: ICONS.linkedin, href: 'https://linkedin.com/',   color: '#0ea5e9' },
-  { label: 'Email',    icon: ICONS.mail,     href: 'mailto:hello@gnolab.dev', color: '#00D9FF' },
+  { label: 'Email',    icon: ICONS.mail,     href: 'mailto:balong.belthassar@gmail.com', color: '#00D9FF' },
 ];
 
 function buildHTML() {
@@ -28,8 +28,8 @@ function buildHTML() {
       <div class="ct-header">
         <div class="container">
           <div class="ct-page-label">Contact</div>
-          <h2 class="ct-title">Travaillons ensemble</h2>
-          <p class="ct-subtitle">Un projet, une question, ou juste envie d'echanger, je reponds sous 24h.</p>
+          <h2 class="ct-title">Parlons de votre projet</h2>
+          <p class="ct-subtitle">Développement, formation, collaboration — je réponds sous 24h.</p>
         </div>
       </div>
 
@@ -60,12 +60,12 @@ function buildHTML() {
 
               <div class="ct-field">
                 <label class="ct-label" for="cf-subject">Sujet</label>
-                <input class="ct-input" id="cf-subject" type="text" placeholder="Projet / Collaboration / Autre">
+                <input class="ct-input" id="cf-subject" type="text" placeholder="Développement · Formation · Collaboration · Autre">
               </div>
 
               <div class="ct-field">
                 <label class="ct-label" for="cf-message">Message</label>
-                <textarea class="ct-input ct-textarea" id="cf-message" placeholder="Decrivez votre projet ou votre question…" rows="5"></textarea>
+                <textarea class="ct-input ct-textarea" id="cf-message" placeholder="Décrivez votre projet, votre besoin en formation, ou posez votre question…" rows="5"></textarea>
               </div>
 
               <div class="ct-form-footer">
@@ -86,10 +86,10 @@ function buildHTML() {
         <aside class="ct-aside">
 
           <div class="ct-block">
-            <h4 class="ct-block-title">Disponibilites</h4>
+            <h4 class="ct-block-title">Disponibilités</h4>
             <div class="ct-avail">
               <span class="ct-avail-dot"></span>
-              Disponible pour missions freelance
+              Disponible · Missions & Formation
             </div>
             <p class="ct-info-text">
               Specialite : analyse exploratoire, modeles predictifs, dashboards BI, pipelines ETL.
@@ -109,8 +109,9 @@ function buildHTML() {
           </div>
 
           <div class="ct-quote">
-            <p class="ct-quote-tag">// mission.txt</p>
-            <p class="ct-quote-text">« Transformer des donnees brutes en avantage competitif mesurable. »</p>
+            <p class="ct-quote-tag">// philosophie.txt</p>
+            <p class="ct-quote-text">« Construire des choses qui fonctionnent.
+Apprendre aux autres à en faire de même. »</p>
           </div>
 
         </aside>
@@ -133,7 +134,7 @@ function validate(container) {
 
 export async function mount(container) {
   setHTML(container, buildHTML());
-  document.title = 'Contact · GnoLab';
+  document.title = 'Contact · GnoLab — Parlons de votre projet';
 
   const form      = container.querySelector('#ct-form');
   const success   = container.querySelector('#ct-success');

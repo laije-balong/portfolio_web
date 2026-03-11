@@ -13,6 +13,49 @@ import { $ }  from './utils/dom.js';
 const DUREE_SORTIE  = 180;
 const DUREE_ENTREE  = 320;
 
+/* ── Meta SEO par route ─────────────────────────────────────────
+   Mise à jour de description + og:title + canonical à chaque nav.
+   La page projet surcharge ces valeurs dans son propre mount().
+   ─────────────────────────────────────────────────────────────── */
+const METAS_ROUTES = {
+  '/': {
+    desc:     'BALONG Laije Belthassar — Développeur & Formateur en informatique. Projets web, systèmes, APIs, automatisation. Basé à Brazzaville.',
+    ogTitle:  'GnoLab — Développeur & Formateur en Informatique',
+  },
+  '/projects': {
+    desc:     'Réalisations de BALONG Laije Belthassar : APIs REST, pipelines IoT, outils CLI, applications web et projets ML.',
+    ogTitle:  'Réalisations · GnoLab',
+  },
+  '/about': {
+    desc:     'À propos de BALONG Laije Belthassar — développeur passionné et formateur en informatique basé à Brazzaville.',
+    ogTitle:  'À propos · GnoLab',
+  },
+  '/contact': {
+    desc:     'Contactez BALONG Laije Belthassar pour un projet de développement, une formation informatique ou une collaboration.',
+    ogTitle:  'Contact · GnoLab',
+  },
+};
+
+function mettreAJourMeta(chemin) {
+  /* Route projet dynamique → surcharge minimale, la page complète le reste */
+  const cle   = chemin.startsWith('/projects/') ? '/projects' : chemin;
+  const meta  = METAS_ROUTES[cle] || METAS_ROUTES['/'];
+  const base  = 'https://gnolab.dev';
+
+  const setContent = (id, val) => {
+    const el = document.getElementById(id);
+    if (el) el.setAttribute('content', val);
+  };
+
+  setContent('meta-desc', meta.desc);
+  setContent('og-title',  meta.ogTitle);
+  setContent('og-desc',   meta.desc);
+
+  /* Canonical */
+  const canonical = document.getElementById('canonical');
+  if (canonical) canonical.setAttribute('href', base + chemin);
+}
+
 class Router {
   constructor() {
     /** @type {Array<{path: string, component: Function, title?: string}>} */
@@ -108,6 +151,9 @@ class Router {
 
     /* Notifier le store → met à jour le nav actif dans app.js */
     store.set('currentRoute', cheminPropre);
+
+    /* Mettre à jour les meta SEO */
+    mettreAJourMeta(cheminPropre);
 
     /* Animation de sortie de la page courante */
     if (this._pageCourante) {
