@@ -1,13 +1,12 @@
 /* ============================================================
    GnoLab — Page Projet (vue détaillée)
-   Layout split : récit à gauche, MiniChart interactif à droite
+   Page projet : récit + extrait de code
    ============================================================ */
 
 import router from '../router.js';
 import store  from '../state.js';
-import { $, $$, setHTML, renderTags } from '../utils/dom.js';
+import { $, setHTML, renderTags } from '../utils/dom.js';
 import { flip }       from '../utils/flip.js';
-import { MiniChart }  from '../charts/MiniChart.js';
 import { ScrollReveal }   from '../utils/scroll-reveal.js';
 import { ouvrirLightbox } from '../utils/lightbox.js';
 
@@ -64,13 +63,6 @@ const ICONES = {
   etoile: `<svg viewBox="0 0 24 24" fill="currentColor" width="12" height="12"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`,
 };
 
-/* ── États de visualisation disponibles ─────────────────────── */
-const ETATS = [
-  { id: 'raw',     label: 'Brut',     desc: 'Données originales non traitées' },
-  { id: 'cleaned', label: 'Nettoyé',  desc: 'Données structurées et filtrées' },
-  { id: 'results', label: 'Résultats', desc: 'Insights et métriques finaux' },
-];
-
 /* ── Chargement d'un projet ──────────────────────────────────── */
 /**
  * Récupère un projet par son slug depuis le cache ou l'API
@@ -83,10 +75,12 @@ async function chargerProjet(slug) {
   const trouve = cache.find(p => p.slug === slug);
   if (trouve) return trouve;
 
-  /* Sinon appeler directement l'endpoint par slug */
-  const reponse = await fetch(`${API_URL}/api/projects/${slug}`);
+  /* Sinon charger depuis le JSON */
+  const reponse = await fetch('/data/projects.json');
   if (!reponse.ok) throw new Error(`HTTP ${reponse.status}`);
-  return await reponse.json();
+  const liste = await reponse.json();
+  store.set('projects', liste);
+  return liste.find(p => p.slug === slug) || null;
 }
 
 /* ── Construction du HTML de la page ────────────────────────── */
@@ -119,8 +113,8 @@ function construirePage(projet) {
         ${badgeCertif}
       </div>
 
-      <!-- ── Layout split ── -->
-      <div class="container proj-layout">
+      <!-- ── Contenu ── -->
+      <div class="container proj-layout proj-layout--single">
 
         <!-- Colonne gauche : récit scrollable -->
         <div class="projet-recit">
@@ -174,36 +168,6 @@ function construirePage(projet) {
           <!-- Bouton certificat -->
           ${btnCertif ? `<div class="proj-certif-wrap" data-reveal="fade-up">${btnCertif}</div>` : ''}
         </div>
-
-        <!-- Colonne droite : visualisation interactive (sticky) -->
-        <aside class="proj-viz-panel">
-          <div class="visual-card" data-reveal="fade-left">
-
-            <!-- En-tête de la carte visuelle -->
-            <div class="visual-card__header">
-              <span class="visual-card__label">Visualisation interactive</span>
-              <span class="visual-card__outil">${projet.tools?.[0] ?? 'Data'}</span>
-            </div>
-
-            <!-- Zone du graphique animé -->
-            <div class="visual-card__canvas" id="viz-canvas"></div>
-
-            <!-- Boutons d'état Brut / Nettoyé / Résultats -->
-            <div class="state-buttons" role="group" aria-label="Choisir la vue">
-              ${ETATS.map(e => `
-                <button
-                  class="state-btn ${e.id === 'raw' ? 'is-active' : ''}"
-                  data-state="${e.id}"
-                  title="${e.desc}"
-                  aria-pressed="${e.id === 'raw'}"
-                >${e.label}</button>
-              `).join('')}
-            </div>
-
-            <!-- Description de l'état actif -->
-            <p class="visual-card__desc" id="viz-desc">${ETATS[0].desc}</p>
-          </div>
-        </aside>
       </div>
     </div>
   `;
@@ -228,9 +192,6 @@ export async function mount(container, params) {
           <div class="skeleton" style="height:60px;width:90%;margin-bottom:1rem;border-radius:8px"></div>
           <div class="skeleton" style="height:16px;width:100%;margin-bottom:0.5rem;border-radius:4px"></div>
           <div class="skeleton" style="height:16px;width:80%;border-radius:4px"></div>
-        </div>
-        <div class="proj-viz-panel" style="padding-top:2rem">
-          <div class="skeleton" style="height:360px;border-radius:16px"></div>
         </div>
       </div>
     </div>
@@ -269,49 +230,6 @@ export async function mount(container, params) {
   /* ── Animations scroll ── */
   const reveal = ScrollReveal(container);
 
-  /* ── MiniChart interactif ── */
-  const vizCanvas = $('#viz-canvas', container);
-  const descViz   = $('#viz-desc',   container);
-  let miniChart   = null;
-  let etatActif   = 'raw';
-
-  if (vizCanvas) {
-    miniChart = MiniChart(vizCanvas, projet);
-  }
-
-  /* ── Changement d'état de visualisation ── */
-  /**
-   * Bascule le graphique vers le nouvel état et met à jour les boutons
-   * @param {string} nouvelEtat — 'raw' | 'cleaned' | 'results'
-   */
-  const changerEtat = (nouvelEtat) => {
-    if (nouvelEtat === etatActif) return;
-    etatActif = nouvelEtat;
-
-    /* Mettre à jour les boutons */
-    $$('.state-btn', container).forEach(btn => {
-      const actif = btn.dataset.state === nouvelEtat;
-      btn.classList.toggle('is-active', actif);
-      btn.setAttribute('aria-pressed', String(actif));
-    });
-
-    /* Mettre à jour la description */
-    const config = ETATS.find(e => e.id === nouvelEtat);
-    if (descViz && config) descViz.textContent = config.desc;
-
-    /* Déléguer au MiniChart */
-    miniChart?.switchTo(nouvelEtat);
-  };
-
-  /* Délégation d'événements sur les boutons d'état */
-  const onClicEtat = (e) => {
-    const btn = e.target.closest('.state-btn[data-state]');
-    if (btn) changerEtat(btn.dataset.state);
-  };
-
-  const groupeEtats = container.querySelector('.state-buttons');
-  groupeEtats?.addEventListener('click', onClicEtat);
-
   /* ── Bouton retour ── */
   const btnRetour = $('#back-btn', container);
   const versGalerie = () => router.push('/projects');
@@ -328,10 +246,8 @@ export async function mount(container, params) {
   /* ── Nettoyage au démontage ── */
   return {
     destroy() {
-      groupeEtats?.removeEventListener('click',  onClicEtat);
       btnRetour?.removeEventListener('click',     versGalerie);
       btnCertif?.removeEventListener('click',     ouvrirCertif);
-      miniChart?.destroy();
       reveal.destroy();
     },
   };

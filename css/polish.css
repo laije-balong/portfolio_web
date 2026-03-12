@@ -209,11 +209,10 @@
   padding-top: 1.5rem;
 }
 
-@media (min-width: 900px) {
-  .proj-layout {
-    grid-template-columns: 1fr 420px;
-    gap: 4rem;
-  }
+/* Colonne unique — visualisation supprimée */
+.proj-layout--single {
+  max-width: 760px;
+  margin-inline: auto;
 }
 
 /* Colonne récit (gauche) */
@@ -295,102 +294,6 @@
   box-shadow: 0 6px 20px rgba(245,158,11,0.2);
 }
 
-/* Colonne visualisation (droite, sticky) */
-.proj-viz-panel {
-  position: sticky;
-  top: calc(var(--header-h) + 2rem);
-  align-self: start;
-  height: fit-content;
-}
-
-/* ────────────────────────────────────────
-   VISUAL CARD — carte de visualisation
-   ──────────────────────────────────────── */
-.visual-card {
-  background: #0b1220;
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 8px 32px rgba(2,6,23,0.5);
-}
-
-.visual-card__header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 14px 20px;
-  background: #071022;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
-}
-
-.visual-card__label {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: #475569;
-  letter-spacing: 0.06em;
-}
-
-.visual-card__outil {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--c-cyan);
-  background: rgba(0,217,255,0.07);
-  padding: 3px 10px;
-  border-radius: 999px;
-  border: 1px solid rgba(0,217,255,0.15);
-}
-
-/* Zone de canvas du graphique */
-.visual-card__canvas {
-  height: 280px;
-  position: relative;
-  overflow: hidden;
-  background: #050d1a;
-}
-
-/* Boutons d'état Brut / Nettoyé / Résultats */
-.state-buttons {
-  display: flex;
-  gap: 8px;
-  padding: 14px 16px;
-  border-top: 1px solid rgba(255,255,255,0.05);
-}
-
-.state-btn {
-  flex: 1;
-  padding: 9px 12px;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  font-weight: 600;
-  color: #64748b;
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.07);
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 180ms ease;
-  letter-spacing: 0.04em;
-}
-
-.state-btn:hover {
-  color: #94a3b8;
-  background: rgba(255,255,255,0.07);
-}
-
-.state-btn.is-active {
-  color: #fff;
-  background: rgba(0,116,217,0.2);
-  border-color: rgba(0,116,217,0.4);
-}
-
-/* Description de l'état actif */
-.visual-card__desc {
-  padding: 8px 16px 14px;
-  font-family: var(--font-mono);
-  font-size: 10px;
-  color: #334155;
-  letter-spacing: 0.04em;
-  text-align: center;
-}
 
 /* ────────────────────────────────────────
    BACK-TO-TOP
@@ -477,24 +380,6 @@
   background: #fff;
   color: #0f172a;
   border-color: #e2e8f0;
-}
-
-[data-theme="light"] .visual-card {
-  background: #fff;
-  border-color: #e2e8f0;
-}
-[data-theme="light"] .visual-card__header { background: #f8fafc; }
-[data-theme="light"] .visual-card__canvas { background: #f1f5f9; }
-
-[data-theme="light"] .state-btn {
-  color: #64748b;
-  background: #f8fafc;
-  border-color: #e2e8f0;
-}
-[data-theme="light"] .state-btn.is-active {
-  background: rgba(0,116,217,0.1);
-  border-color: rgba(0,116,217,0.3);
-  color: var(--c-blue);
 }
 
 [data-theme="light"] #back-to-top {
