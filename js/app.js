@@ -265,10 +265,25 @@ function initRouter() {
         title: 'Contact · GnoLab',
         component: () => import('./pages/contact.js'),
       },
-      {
+            {
         path: '/admin',
         title: 'Admin · GnoLab',
         component: () => import('./pages/admin.js'),
+      },
+      {
+        path: '/admin/:section',
+        title: 'Admin · GnoLab',
+        component: () => import('./pages/admin.js'),
+      },
+      {
+      path: '/blog',
+      title: 'Blog · GnoLab',
+      component: () => import('./pages/blog.js'),
+      },
+      {
+      path: '/blog/:slug',
+      title: 'Article · GnoLab',
+      component: () => import('./pages/article.js'),
       },
       {
         path: '/404',
