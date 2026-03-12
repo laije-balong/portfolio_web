@@ -31,7 +31,77 @@ async function apiFetch(path, options = {}) {
   return res.json();
 }
 
-/* ── Formater une date ISO ───────────────────────────────── */
+/* ── Upload fichier vers l'API ───────────────────────────── */
+async function uploaderFichier(file, endpoint) {
+  const formData = new FormData();
+  formData.append('file', file);
+
+  const res = await fetch(`${API_URL}${endpoint}`, {
+    method: 'POST',
+    headers: { 'Authorization': `Bearer ${getToken()}` },
+    body: formData,
+  });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ error: `HTTP ${res.status}` }));
+    throw new Error(err.error || 'Erreur upload');
+  }
+  const data = await res.json();
+  return `${API_URL}${data.url}`;  // URL complète exploitable dans <img src>
+}
+
+/* ── Brancher les boutons d'upload sur un formulaire ─────── */
+function initUploadBtns(champs) {
+  // champs = [{ fileInputId, urlInputId, previewId, imgId, removeId, endpoint, indicateurId? }]
+  champs.forEach(({ fileInputId, urlInputId, previewId, imgId, removeId, endpoint }) => {
+    const fileInput = document.getElementById(fileInputId);
+    const urlInput  = document.getElementById(urlInputId);
+    const preview   = document.getElementById(previewId);
+    const img       = document.getElementById(imgId);
+    const removeBtn = document.getElementById(removeId);
+    if (!fileInput) return;
+
+    /* Si une URL existe déjà au chargement, afficher la preview */
+    if (urlInput?.value) {
+      img.src = urlInput.value;
+      preview.style.display = 'flex';
+    }
+
+    fileInput.addEventListener('change', async () => {
+      const file = fileInput.files[0];
+      if (!file) return;
+
+      /* Feedback visuel pendant l'upload */
+      const btn = fileInput.closest('label');
+      btn.classList.add('is-loading');
+      btn.querySelector('svg').style.display = 'none';
+      btn.childNodes[btn.childNodes.length - 2].textContent = ' Upload…';
+
+      try {
+        const url = await uploaderFichier(file, endpoint);
+        urlInput.value = url;
+        img.src = url;
+        preview.style.display = 'flex';
+      } catch (err) {
+        alert(`Erreur : ${err.message}`);
+      } finally {
+        btn.classList.remove('is-loading');
+        btn.querySelector('svg').style.display = '';
+        btn.childNodes[btn.childNodes.length - 2].textContent = ' Uploader';
+        fileInput.value = '';
+      }
+    });
+
+    removeBtn?.addEventListener('click', () => {
+      urlInput.value = '';
+      img.src = '';
+      preview.style.display = 'none';
+      fileInput.value = '';
+    });
+  });
+}
+
+
 function formatDate(iso) {
   if (!iso) return '—';
   return new Date(iso).toLocaleDateString('fr-FR', {
@@ -208,8 +278,19 @@ function htmlFormProjet(p = null) {
                 placeholder="Python, SQL, Pandas" />
             </div>
             <div class="adm-field">
-              <label>URL image de couverture</label>
-              <input type="text" id="form-cover" value="${v('cover')}" placeholder="/assets/images/projects/..." />
+              <label>Image de couverture</label>
+              <div class="adm-upload-row">
+                <input type="text" id="form-cover" value="${v('cover')}" placeholder="URL ou uploader →" />
+                <label class="adm-upload-btn" title="Uploader une image (JPG/PNG/WebP, max 2 Mo)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                  Uploader
+                  <input type="file" id="form-cover-file" accept="image/jpeg,image/png,image/webp" style="display:none" />
+                </label>
+              </div>
+              <div class="adm-upload-preview" id="form-cover-preview" style="display:none">
+                <img id="form-cover-img" src="" alt="" />
+                <button type="button" class="adm-upload-remove" id="form-cover-remove">✕</button>
+              </div>
             </div>
             <div class="adm-field adm-field-full">
               <label>Challenge</label>
@@ -224,9 +305,19 @@ function htmlFormProjet(p = null) {
               <textarea id="form-proofs" rows="2" placeholder="Résultats mesurables...">${v('proofs')}</textarea>
             </div>
             <div class="adm-field">
-              <label>URL certificat</label>
-              <input type="text" id="form-certificate" value="${v('certificate')}"
-                placeholder="/assets/images/projects/certificates/..." />
+              <label>Certificat</label>
+              <div class="adm-upload-row">
+                <input type="text" id="form-certificate" value="${v('certificate')}" placeholder="URL ou uploader →" />
+                <label class="adm-upload-btn" title="JPG/PNG/WebP/PDF, max 5 Mo">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                  Uploader
+                  <input type="file" id="form-cert-file" accept="image/jpeg,image/png,image/webp,application/pdf" style="display:none" />
+                </label>
+              </div>
+              <div class="adm-upload-preview" id="form-cert-preview" style="display:none">
+                <img id="form-cert-img" src="" alt="" />
+                <button type="button" class="adm-upload-remove" id="form-cert-remove">✕</button>
+              </div>
             </div>
             <div class="adm-field adm-field-checkboxes">
               <label class="adm-checkbox-label">
@@ -343,6 +434,26 @@ export async function mount(container) {
     document.getElementById('modal-close').addEventListener('click', fermer);
     document.getElementById('form-cancel').addEventListener('click', fermer);
     modal.addEventListener('click', e => { if (e.target === modal) fermer(); });
+
+    /* Boutons d'upload */
+    initUploadBtns([
+      {
+        fileInputId: 'form-cover-file',
+        urlInputId:  'form-cover',
+        previewId:   'form-cover-preview',
+        imgId:       'form-cover-img',
+        removeId:    'form-cover-remove',
+        endpoint:    '/api/upload/cover',
+      },
+      {
+        fileInputId: 'form-cert-file',
+        urlInputId:  'form-certificate',
+        previewId:   'form-cert-preview',
+        imgId:       'form-cert-img',
+        removeId:    'form-cert-remove',
+        endpoint:    '/api/upload/certificate',
+      },
+    ]);
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -551,8 +662,19 @@ export async function mount(container) {
                 <input type="text" id="art-tags" value="${tags}" placeholder="Dev, Python, Pédagogie" />
               </div>
               <div class="adm-field">
-                <label>Image de couverture (URL)</label>
-                <input type="text" id="art-cover" value="${v('cover')}" placeholder="/assets/images/blog/..." />
+                <label>Image de couverture</label>
+                <div class="adm-upload-row">
+                  <input type="text" id="art-cover" value="${v('cover')}" placeholder="URL ou uploader →" />
+                  <label class="adm-upload-btn" title="JPG/PNG/WebP, max 2 Mo">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                    Uploader
+                    <input type="file" id="art-cover-file" accept="image/jpeg,image/png,image/webp" style="display:none" />
+                  </label>
+                </div>
+                <div class="adm-upload-preview" id="art-cover-preview" style="display:none">
+                  <img id="art-cover-img" src="" alt="" />
+                  <button type="button" class="adm-upload-remove" id="art-cover-remove">✕</button>
+                </div>
               </div>
             </div>
 
@@ -628,6 +750,18 @@ export async function mount(container) {
     document.getElementById('art-modal-close').addEventListener('click', fermer);
     document.getElementById('art-form-cancel').addEventListener('click', fermer);
     modal.addEventListener('click', e => { if (e.target === modal) fermer(); });
+
+    /* Bouton d'upload couverture article */
+    initUploadBtns([
+      {
+        fileInputId: 'art-cover-file',
+        urlInputId:  'art-cover',
+        previewId:   'art-cover-preview',
+        imgId:       'art-cover-img',
+        removeId:    'art-cover-remove',
+        endpoint:    '/api/upload/cover',
+      },
+    ]);
 
     document.getElementById('article-form').addEventListener('submit', async e => {
       e.preventDefault();
@@ -1022,7 +1156,46 @@ const ADMIN_CSS = `
   overflow-y: auto; background: var(--c-bg-panel);
 }
 
-/* Responsive */
+/* Upload widgets */
+.adm-upload-row {
+  display: flex; gap: var(--sp-2); align-items: stretch;
+}
+.adm-upload-row input[type="text"] {
+  flex: 1; min-width: 0;
+}
+.adm-upload-btn {
+  display: inline-flex; align-items: center; gap: var(--sp-1);
+  padding: var(--sp-3) var(--sp-4);
+  background: var(--c-surface); border: 1px solid var(--c-border);
+  border-radius: var(--r-md); cursor: pointer;
+  font-size: var(--fs-xs); font-weight: var(--fw-medium);
+  color: var(--c-text-secondary); white-space: nowrap;
+  transition: all var(--t-fast); user-select: none;
+  flex-shrink: 0;
+}
+.adm-upload-btn:hover { background: var(--c-surface-hover); color: var(--c-cyan); border-color: rgba(0,217,255,0.3); }
+.adm-upload-btn.is-loading { opacity: 0.6; pointer-events: none; }
+.adm-upload-preview {
+  display: flex; align-items: center; gap: var(--sp-3);
+  margin-top: var(--sp-2);
+  padding: var(--sp-2) var(--sp-3);
+  background: var(--c-bg-card); border: 1px solid var(--c-border);
+  border-radius: var(--r-md);
+}
+.adm-upload-preview img {
+  height: 48px; width: 80px; object-fit: cover;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--c-border);
+}
+.adm-upload-remove {
+  margin-left: auto; background: transparent; border: none;
+  color: var(--c-text-dim); cursor: pointer; font-size: var(--fs-sm);
+  padding: var(--sp-1); border-radius: var(--r-sm);
+  transition: color var(--t-fast);
+}
+.adm-upload-remove:hover { color: var(--c-red); }
+
+
 @media (max-width: 768px) {
   .adm-layout { grid-template-columns: 1fr; }
   .adm-sidebar { display: none; }
