@@ -11,5 +11,7 @@
 
 const DEV  = 'http://localhost:3001';
 const PROD = 'https://api.gnolab.dev';   // à activer lors du déploiement Railway
+const FRONTEND_URL = 'http://localhost:55781'; // à activer lors du déploiement Railway
 
 export const API_URL = DEV;
+export const FRONTEND_API_URL = FRONTEND_URL;
