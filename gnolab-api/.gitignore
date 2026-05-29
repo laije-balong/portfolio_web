@@ -1,7 +1,0 @@
-node_modules/
-.env
-db/gnolab.db
-uploads/covers/*
-uploads/certificates/*
-!uploads/covers/.gitkeep
-!uploads/certificates/.gitkeep

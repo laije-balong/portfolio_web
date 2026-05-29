@@ -1,0 +1,103 @@
+/* ============================================================================
+   GnoLab — Design Tokens
+   Source de vérité visuelle. Tout le reste du site consomme ces variables.
+   Thème : « Laboratoire de systèmes » — précis, instrumenté, rigoureux.
+   ========================================================================== */
+
+:root {
+  /* ── Couleurs : fond abyssal + surfaces étagées ───────────────────────── */
+  --c-bg:            #020a14;  /* fond abyssal (= theme-color historique) */
+  --c-surface-1:     #061320;  /* cartes, panneaux */
+  --c-surface-2:     #0b1d2e;  /* élévation supérieure, hover */
+  --c-surface-3:     #112842;  /* bordures actives, surbrillance */
+  --c-line:          #14304a;  /* bordures discrètes */
+  --c-line-strong:   #1f4a6b;  /* bordures marquées */
+
+  /* ── Texte ────────────────────────────────────────────────────────────── */
+  --c-text:          #e6f0fa;  /* texte principal */
+  --c-text-muted:    #9fb4c7;  /* texte secondaire */
+  --c-text-faint:    #5f7d97;  /* labels, métadonnées */
+
+  /* ── Accent signal (terminal) ─────────────────────────────────────────── */
+  --c-accent:        #22e3b8;  /* cyan/vert signal */
+  --c-accent-soft:   rgba(34, 227, 184, 0.12);
+  --c-accent-line:   rgba(34, 227, 184, 0.35);
+  --c-accent-strong: #14c79e;
+
+  /* ── Couleurs par domaine (lecture instantanée du catalogue) ──────────── */
+  --c-systemes:        #22e3b8;  /* cyan/teal */
+  --c-data-ml:         #a78bfa;  /* violet */
+  --c-business:        #f4b740;  /* ambre/or — Business Analysis */
+  --c-securite:        #fb7185;  /* rose/rouge */
+  --c-architecture:    #38bdf8;  /* bleu */
+  --c-maths:           #4ade80;  /* vert */
+
+  /* ── Statuts ──────────────────────────────────────────────────────────── */
+  --c-status-done:     #4ade80;
+  --c-status-progress: #f4b740;
+  --c-status-planned:  #5f7d97;
+
+  /* ── Typographie ──────────────────────────────────────────────────────── */
+  --font-display: 'Syne', system-ui, sans-serif;       /* titres */
+  --font-body:    'DM Sans', system-ui, sans-serif;     /* corps */
+  --font-mono:    'JetBrains Mono', ui-monospace, monospace; /* données, labels */
+
+  /* Échelle typographique (modulaire ~1.25) */
+  --fs-xs:   0.75rem;
+  --fs-sm:   0.875rem;
+  --fs-base: 1rem;
+  --fs-md:   1.125rem;
+  --fs-lg:   1.375rem;
+  --fs-xl:   1.75rem;
+  --fs-2xl:  2.25rem;
+  --fs-3xl:  3rem;
+  --fs-4xl:  4rem;
+
+  --lh-tight: 1.1;
+  --lh-snug:  1.3;
+  --lh-base:  1.6;
+
+  --fw-regular: 400;
+  --fw-medium:  500;
+  --fw-bold:    700;
+  --fw-black:   800;
+
+  /* ── Espacement (base 4px) ────────────────────────────────────────────── */
+  --sp-1:  0.25rem;
+  --sp-2:  0.5rem;
+  --sp-3:  0.75rem;
+  --sp-4:  1rem;
+  --sp-5:  1.5rem;
+  --sp-6:  2rem;
+  --sp-8:  3rem;
+  --sp-10: 4rem;
+  --sp-12: 6rem;
+  --sp-16: 8rem;
+
+  /* ── Rayons ───────────────────────────────────────────────────────────── */
+  --radius-sm: 6px;
+  --radius:    10px;
+  --radius-lg: 16px;
+  --radius-pill: 999px;
+
+  /* ── Ombres ───────────────────────────────────────────────────────────── */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+  --shadow:    0 8px 24px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.55);
+  --glow-accent: 0 0 0 1px var(--c-accent-line), 0 8px 30px var(--c-accent-soft);
+
+  /* ── Layout ───────────────────────────────────────────────────────────── */
+  --container:      1200px;
+  --container-prose: 760px;
+
+  /* ── Motion ───────────────────────────────────────────────────────────── */
+  --ease:        cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-fast:    150ms;
+  --dur:         260ms;
+  --dur-slow:    450ms;
+
+  /* ── Z-index ──────────────────────────────────────────────────────────── */
+  --z-nav:     100;
+  --z-overlay: 200;
+}

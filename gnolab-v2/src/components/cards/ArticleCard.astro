@@ -1,0 +1,55 @@
+---
+import Tag from '../ui/Tag.astro';
+interface Props {
+  slug: string;
+  titre: string;
+  resume: string;
+  date: Date;
+  tags?: string[];
+  tempsLecture?: number;
+}
+const { slug, titre, resume, date, tags = [], tempsLecture = 5 } = Astro.props;
+const dateStr = new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }).format(date);
+---
+<a href={`/blog/${slug}`} class="acard reveal">
+  <div class="acard__meta mono">
+    <span>{dateStr}</span>
+    <span>·</span>
+    <span>{tempsLecture} min</span>
+  </div>
+  <h3 class="acard__title">{titre}</h3>
+  <p class="acard__resume">{resume}</p>
+  {tags.length > 0 && (
+    <div class="acard__tags">{tags.slice(0, 3).map((t) => <Tag label={t} />)}</div>
+  )}
+</a>
+
+<style>
+  .acard {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-3);
+    padding: var(--sp-5);
+    background: var(--c-surface-1);
+    border: 1px solid var(--c-line);
+    border-radius: var(--radius-lg);
+    transition: transform var(--dur) var(--ease), border-color var(--dur) var(--ease);
+    height: 100%;
+  }
+  .acard:hover { transform: translateY(-4px); border-color: var(--c-accent-line); }
+  .acard__meta {
+    display: flex; gap: var(--sp-2);
+    font-size: var(--fs-xs);
+    color: var(--c-accent);
+  }
+  .acard__title { font-size: var(--fs-lg); color: var(--c-text); }
+  .acard__resume {
+    color: var(--c-text-muted);
+    font-size: var(--fs-sm);
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .acard__tags { display: flex; flex-wrap: wrap; gap: var(--sp-2); margin-top: auto; }
+</style>

@@ -1,0 +1,21 @@
+---
+titre: "Mini-Shell Unix en C"
+resume: "Shell Unix complet : fork/exec, redirections, pipes multiples, jobs en arrière-plan et gestion des signaux."
+domaine: "Systèmes"
+type: "repo"
+track: "A"
+niveau: "Avancé"
+statut: "planifié"
+phase: 1
+dateDebut: 2026-06-08
+technos: ["C", "POSIX", "Make"]
+methodes: []
+livrables:
+  - { type: "github", url: "https://github.com/laije-belthassar/mini-shell", label: "Code source" }
+ordre: 3
+---
+
+## Objectif
+
+Implémenter un shell Unix fonctionnel en C pur (REPL, redirections, pipes, signaux) —
+le projet phare du trimestre, démontrant la maîtrise des processus Unix.

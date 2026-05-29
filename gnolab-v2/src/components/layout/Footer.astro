@@ -1,0 +1,68 @@
+---
+const year = 2026; // statique : Date.now() indisponible côté build sandbox
+const links = [
+  { href: 'https://github.com/laije-belthassar', label: 'GitHub' },
+  { href: 'https://credly.com/users/laije-belthassar', label: 'Credly' },
+  { href: '/design', label: 'Design system' },
+];
+---
+<footer class="ftr">
+  <div class="container ftr__inner">
+    <div class="ftr__brand">
+      <span class="ftr__name">GnoLab</span>
+      <p class="ftr__tag">Visez la précision, maîtrisez la décision.</p>
+    </div>
+    <nav class="ftr__links" aria-label="Liens secondaires">
+      {links.map((l) => <a href={l.href} class="ftr__link">{l.label}</a>)}
+    </nav>
+  </div>
+  <div class="container ftr__bottom">
+    <span>BALONG Laije Belthassar — Brazzaville, Congo</span>
+    <span>© {year} GnoLab</span>
+  </div>
+</footer>
+
+<style>
+  .ftr {
+    border-top: 1px solid var(--c-line);
+    margin-top: var(--sp-16);
+    padding-block: var(--sp-8) var(--sp-5);
+    background: var(--c-surface-1);
+  }
+  .ftr__inner {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--sp-6);
+    flex-wrap: wrap;
+    padding-bottom: var(--sp-6);
+  }
+  .ftr__name {
+    font-family: var(--font-display);
+    font-weight: var(--fw-black);
+    font-size: var(--fs-lg);
+  }
+  .ftr__tag {
+    font-family: var(--font-mono);
+    font-size: var(--fs-sm);
+    color: var(--c-text-faint);
+    margin-top: var(--sp-2);
+  }
+  .ftr__links { display: flex; gap: var(--sp-5); flex-wrap: wrap; }
+  .ftr__link {
+    font-family: var(--font-mono);
+    font-size: var(--fs-sm);
+    color: var(--c-text-muted);
+  }
+  .ftr__link:hover { color: var(--c-accent); }
+  .ftr__bottom {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--sp-4);
+    flex-wrap: wrap;
+    padding-top: var(--sp-5);
+    border-top: 1px solid var(--c-line);
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    color: var(--c-text-faint);
+  }
+</style>

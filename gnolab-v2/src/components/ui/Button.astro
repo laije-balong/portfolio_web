@@ -1,0 +1,48 @@
+---
+/**
+ * Button — lien stylé (primary | ghost). Rend un <a> par défaut.
+ */
+interface Props {
+  href?: string;
+  variant?: 'primary' | 'ghost';
+  size?: 'sm' | 'md';
+  class?: string;
+}
+const { href = '#', variant = 'primary', size = 'md', class: cls = '' } = Astro.props;
+---
+<a href={href} class={`btn btn--${variant} btn--${size} ${cls}`}>
+  <slot />
+</a>
+
+<style>
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-2);
+    font-family: var(--font-mono);
+    font-weight: var(--fw-medium);
+    border-radius: var(--radius);
+    transition: transform var(--dur-fast) var(--ease),
+                background var(--dur) var(--ease),
+                border-color var(--dur) var(--ease);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .btn:hover { transform: translateY(-1px); }
+  .btn--sm { padding: 0.5em 1em; font-size: var(--fs-sm); }
+  .btn--md { padding: 0.7em 1.4em; font-size: var(--fs-base); }
+
+  .btn--primary {
+    background: var(--c-accent);
+    color: var(--c-bg);
+    border: 1px solid var(--c-accent);
+  }
+  .btn--primary:hover { background: var(--c-accent-strong); box-shadow: var(--glow-accent); }
+
+  .btn--ghost {
+    background: transparent;
+    color: var(--c-text);
+    border: 1px solid var(--c-line-strong);
+  }
+  .btn--ghost:hover { border-color: var(--c-accent); color: var(--c-accent); }
+</style>
