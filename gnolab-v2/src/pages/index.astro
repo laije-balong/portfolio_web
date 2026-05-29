@@ -1,17 +1,139 @@
 ---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Button from '../components/ui/Button.astro';
+import Stat from '../components/ui/Stat.astro';
+import ProjectCard from '../components/cards/ProjectCard.astro';
+import ArticleCard from '../components/cards/ArticleCard.astro';
 
+const projets = await getCollection('projets');
+const articles = (await getCollection('articles'))
+  .filter((a) => a.data.publie)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const featured = projets
+  .filter((p) => p.data.featured)
+  .sort((a, b) => a.data.ordre - b.data.ordre);
+
+const nbProjets = projets.length;
+const nbTermines = projets.filter((p) => p.data.statut === 'terminé').length;
+const nbArticles = articles.length;
 ---
+<Base>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container hero__inner">
+      <p class="eyebrow">Ingénieur Systèmes · Business Analyst · Brazzaville</p>
+      <h1 class="hero__title">
+        Construire des systèmes qui fonctionnent.<br />
+        <span class="hero__accent">Comprendre le besoin qui les justifie.</span>
+      </h1>
+      <p class="hero__lead">
+        Je documente une trajectoire d'ingénierie : du transistor au scheduler,
+        de l'adresse virtuelle au cache L1 — et du besoin métier au business case.
+        Chaque projet est une preuve.
+      </p>
+      <div class="hero__cta">
+        <Button href="/projets">Voir les projets</Button>
+        <Button href="/parcours" variant="ghost">Mon parcours →</Button>
+      </div>
+      <div class="hero__stats">
+        <Stat value={`${nbProjets}`} label="Projets" />
+        <Stat value={`${nbTermines}`} label="Terminés" />
+        <Stat value={`${nbArticles}`} label="Articles" />
+        <Stat value="14" label="Certifications" />
+      </div>
+    </div>
+  </section>
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+  <!-- PROJETS PHARES -->
+  {featured.length > 0 && (
+    <section class="section">
+      <div class="container">
+        <div class="sec-head">
+          <h2>Projets phares</h2>
+          <a href="/projets" class="sec-head__link mono">Tout le catalogue →</a>
+        </div>
+        <div class="grid">
+          {featured.map((p) => (
+            <ProjectCard
+              slug={p.id}
+              titre={p.data.titre}
+              resume={p.data.resume}
+              domaine={p.data.domaine}
+              statut={p.data.statut}
+              type={p.data.type}
+              technos={p.data.technos}
+              methodes={p.data.methodes}
+              nbLivrables={p.data.livrables.length}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- DERNIERS ARTICLES -->
+  {articles.length > 0 && (
+    <section class="section">
+      <div class="container">
+        <div class="sec-head">
+          <h2>Dernières publications</h2>
+          <a href="/blog" class="sec-head__link mono">Tout le blog →</a>
+        </div>
+        <div class="grid">
+          {articles.slice(0, 3).map((a) => (
+            <ArticleCard
+              slug={a.id}
+              titre={a.data.titre}
+              resume={a.data.resume}
+              date={a.data.date}
+              tags={a.data.tags}
+              tempsLecture={a.data.tempsLecture}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+</Base>
+
+<style>
+  .hero { padding-block: var(--sp-16) var(--sp-12); position: relative; }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(60% 50% at 50% 0%, var(--c-accent-soft), transparent 70%);
+    pointer-events: none;
+  }
+  .hero__inner { position: relative; max-width: 880px; }
+  .hero__title {
+    font-size: clamp(2rem, 5vw, var(--fs-4xl));
+    margin-top: var(--sp-4);
+  }
+  .hero__accent { color: var(--c-accent); }
+  .hero__lead {
+    margin-top: var(--sp-5);
+    font-size: var(--fs-md);
+    color: var(--c-text-muted);
+    max-width: 60ch;
+  }
+  .hero__cta { display: flex; gap: var(--sp-3); margin-top: var(--sp-6); flex-wrap: wrap; }
+  .hero__stats {
+    display: flex; gap: var(--sp-8); margin-top: var(--sp-10); flex-wrap: wrap;
+    padding-top: var(--sp-6); border-top: 1px solid var(--c-line);
+  }
+
+  .sec-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: var(--sp-4); margin-bottom: var(--sp-6);
+  }
+  .sec-head h2 { font-size: var(--fs-2xl); }
+  .sec-head__link { font-size: var(--fs-sm); color: var(--c-accent); }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: var(--sp-5);
+  }
+</style>

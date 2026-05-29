@@ -1,0 +1,37 @@
+---
+import Base from '../layouts/Base.astro';
+import Button from '../components/ui/Button.astro';
+---
+<Base title="À propos — GnoLab" description="BALONG Laije Belthassar — ingénieur systèmes et business analyst basé à Brazzaville.">
+  <section class="section">
+    <div class="container about">
+      <p class="eyebrow">À propos</p>
+      <h1 class="ttl">BALONG Laije Belthassar</h1>
+      <div class="prose">
+        <p>
+          Ingénieur systèmes en formation intensive et business analyst, basé à
+          <strong>Brazzaville</strong>. Je construis des systèmes bas niveau (C, kernel,
+          réseau) et j'analyse des besoins métier (BRD, BPMN, dashboards) — deux faces
+          d'une même rigueur.
+        </p>
+        <p>
+          Ce site documente ma trajectoire 2026-2027 : objectif <strong>ingénieur systèmes
+          confirmé</strong>, contributions open source, et un profil hybride rare —
+          quelqu'un qui comprend la machine <em>et</em> le besoin.
+        </p>
+        <h2>Me contacter</h2>
+        <p>Pour une opportunité, une collaboration ou une question technique :</p>
+      </div>
+      <div class="row">
+        <Button href="mailto:laijebalong@gmail.com">Email</Button>
+        <Button href="https://github.com/laije-belthassar" variant="ghost">GitHub →</Button>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .about { max-width: var(--container-prose); }
+  .ttl { font-size: var(--fs-3xl); margin: var(--sp-2) 0 var(--sp-6); }
+  .row { display: flex; gap: var(--sp-3); margin-top: var(--sp-6); flex-wrap: wrap; }
+</style>

@@ -1,0 +1,59 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+
+const certs = (await getCollection('certifications')).sort((a, b) => a.data.ordre - b.data.ordre);
+// regroupement par domaine
+const parDomaine = certs.reduce((acc, c) => {
+  (acc[c.data.domaine] ??= []).push(c);
+  return acc;
+}, {} as Record<string, typeof certs>);
+---
+<Base title="Certifications — GnoLab" description="14 certifications professionnelles : data, systèmes, sécurité, gestion de projet.">
+  <section class="section">
+    <div class="container">
+      <p class="eyebrow">Preuves</p>
+      <h1 class="ttl">Certifications</h1>
+      <p class="lead text-muted">Vérifiables sur Credly. Chacune adossée à des projets concrets.</p>
+
+      {Object.entries(parDomaine).map(([domaine, list]) => (
+        <div class="cert-group">
+          <h2 class="cert-group__title mono">{domaine}</h2>
+          <div class="grid">
+            {list.map((c) => (
+              <div class="cert reveal">
+                <h3 class="cert__nom">{c.data.nom}</h3>
+                <p class="cert__org mono">{c.data.organisme}</p>
+                {c.data.credlyUrl && (
+                  <a href={c.data.credlyUrl} class="cert__link mono" target="_blank" rel="noopener">
+                    Vérifier sur Credly →
+                  </a>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+</Base>
+
+<style>
+  .ttl { font-size: var(--fs-3xl); margin-top: var(--sp-2); }
+  .lead { margin-top: var(--sp-3); margin-bottom: var(--sp-8); }
+  .cert-group { margin-top: var(--sp-8); }
+  .cert-group__title {
+    font-size: var(--fs-xs); text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--c-accent); margin-bottom: var(--sp-4);
+  }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: var(--sp-4); }
+  .cert {
+    padding: var(--sp-5);
+    background: var(--c-surface-1);
+    border: 1px solid var(--c-line);
+    border-radius: var(--radius-lg);
+  }
+  .cert__nom { font-size: var(--fs-md); color: var(--c-text); }
+  .cert__org { font-size: var(--fs-sm); color: var(--c-text-muted); margin-top: var(--sp-1); }
+  .cert__link { display: inline-block; margin-top: var(--sp-3); font-size: var(--fs-sm); color: var(--c-accent); }
+</style>

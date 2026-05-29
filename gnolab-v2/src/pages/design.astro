@@ -1,0 +1,104 @@
+---
+import Base from '../layouts/Base.astro';
+import Button from '../components/ui/Button.astro';
+import Badge from '../components/ui/Badge.astro';
+import Tag from '../components/ui/Tag.astro';
+import Stat from '../components/ui/Stat.astro';
+import { DOMAINES, STATUTS, DOMAINE_LIST } from '../lib/taxonomy';
+
+const colorTokens = [
+  ['--c-bg', 'Fond abyssal'], ['--c-surface-1', 'Surface 1'], ['--c-surface-2', 'Surface 2'],
+  ['--c-surface-3', 'Surface 3'], ['--c-accent', 'Accent signal'], ['--c-text', 'Texte'],
+  ['--c-text-muted', 'Texte atténué'], ['--c-text-faint', 'Labels'],
+];
+---
+<Base title="Design System — GnoLab" description="Styleguide vivant : tokens, typographie et composants.">
+  <section class="section">
+    <div class="container">
+      <p class="eyebrow">Système de design</p>
+      <h1 class="ttl">Styleguide GnoLab</h1>
+      <p class="lead text-muted">La source vivante des tokens et composants. Garde-fou de cohérence.</p>
+
+      <!-- COULEURS -->
+      <h2 class="sg-h2">Couleurs — base</h2>
+      <div class="swatches">
+        {colorTokens.map(([v, label]) => (
+          <div class="swatch">
+            <div class="swatch__c" style={`background:var(${v})`}></div>
+            <span class="swatch__l mono">{label}</span>
+            <span class="swatch__v mono">{v}</span>
+          </div>
+        ))}
+      </div>
+
+      <h2 class="sg-h2">Couleurs — par domaine</h2>
+      <div class="swatches">
+        {DOMAINE_LIST.map((d) => (
+          <div class="swatch">
+            <div class="swatch__c" style={`background:${DOMAINES[d].color}`}></div>
+            <span class="swatch__l mono">{DOMAINES[d].label}</span>
+            <span class="swatch__v mono">{DOMAINES[d].abbr}</span>
+          </div>
+        ))}
+      </div>
+
+      <!-- TYPO -->
+      <h2 class="sg-h2">Typographie</h2>
+      <div class="type-demo">
+        <p style="font-family:var(--font-display);font-size:var(--fs-3xl);font-weight:800">Syne · Display</p>
+        <p style="font-family:var(--font-body);font-size:var(--fs-md)">DM Sans · le corps de texte, lisible et neutre, pour les paragraphes.</p>
+        <p style="font-family:var(--font-mono);font-size:var(--fs-base)">JetBrains Mono · données, labels et métadonnées techniques</p>
+      </div>
+
+      <!-- BOUTONS -->
+      <h2 class="sg-h2">Boutons</h2>
+      <div class="row">
+        <Button href="#">Primary</Button>
+        <Button href="#" variant="ghost">Ghost</Button>
+        <Button href="#" size="sm">Primary sm</Button>
+      </div>
+
+      <!-- BADGES & TAGS -->
+      <h2 class="sg-h2">Badges (domaine)</h2>
+      <div class="row">
+        {DOMAINE_LIST.map((d) => <Badge label={DOMAINES[d].label} color={DOMAINES[d].color} />)}
+      </div>
+      <h2 class="sg-h2">Badges (statut)</h2>
+      <div class="row">
+        {Object.values(STATUTS).map((s) => <Badge label={s.label} color={s.color} />)}
+      </div>
+      <h2 class="sg-h2">Tags (technos / méthodes)</h2>
+      <div class="row">
+        {['C', 'POSIX', 'BPMN', 'Power BI', 'SQL', 'MoSCoW'].map((t) => <Tag label={t} />)}
+      </div>
+
+      <!-- STATS -->
+      <h2 class="sg-h2">Chiffres-clés</h2>
+      <div class="row" style="gap:var(--sp-8)">
+        <Stat value="60" label="Projets prévus" />
+        <Stat value="14" label="Certifications" />
+        <Stat value="6" label="Domaines" />
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .ttl { font-size: var(--fs-3xl); margin-top: var(--sp-2); }
+  .lead { margin-top: var(--sp-3); margin-bottom: var(--sp-8); }
+  .sg-h2 {
+    font-size: var(--fs-lg);
+    margin-top: var(--sp-10);
+    margin-bottom: var(--sp-4);
+    padding-bottom: var(--sp-2);
+    border-bottom: 1px solid var(--c-line);
+    color: var(--c-text);
+  }
+  .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: var(--sp-4); }
+  .swatch { display: flex; flex-direction: column; gap: var(--sp-1); }
+  .swatch__c { height: 64px; border-radius: var(--radius); border: 1px solid var(--c-line); }
+  .swatch__l { font-size: var(--fs-xs); color: var(--c-text); }
+  .swatch__v { font-size: var(--fs-xs); color: var(--c-text-faint); }
+  .type-demo { display: flex; flex-direction: column; gap: var(--sp-4); }
+  .row { display: flex; flex-wrap: wrap; gap: var(--sp-3); align-items: center; }
+</style>
