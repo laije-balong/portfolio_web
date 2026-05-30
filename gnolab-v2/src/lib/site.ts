@@ -54,7 +54,7 @@ export const contact = {
   github: {
     show: true,
     label: 'GitHub',
-    href: 'https://github.com/laije-belthassar', // À VÉRIFIER
+    href: 'https://github.com/laije1', // À VÉRIFIER
   },
   credly: {
     show: true,
