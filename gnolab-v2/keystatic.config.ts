@@ -131,11 +131,38 @@ export default config({
         organisme: fields.text({ label: 'Organisme' }),
         domaine: fields.text({ label: 'Domaine (sert de regroupement, ex. « Data & Analyse »)' }),
         niveau: fields.text({ label: 'Niveau (optionnel, ex. « Associate »)' }),
-        credlyUrl: fields.url({ label: 'Lien Credly (vérification)' }),
+        // Preuves de vérification — autant que voulu, source au choix
+        preuves: fields.array(
+          fields.object({
+            source: fields.select({
+              label: 'Source de vérification',
+              options: [
+                { label: 'Credly', value: 'credly' },
+                { label: 'Coursera', value: 'coursera' },
+                { label: 'Google Drive', value: 'drive' },
+                { label: 'LinkedIn', value: 'linkedin' },
+                { label: "Site de l'organisme", value: 'organisme' },
+                { label: 'Autre', value: 'autre' },
+              ],
+              defaultValue: 'credly',
+            }),
+            url: fields.url({ label: 'Lien de vérification' }),
+            label: fields.text({ label: 'Libellé personnalisé (optionnel)' }),
+          }),
+          {
+            label: 'Preuves de vérification',
+            itemLabel: (p) => p.fields.label.value || p.fields.source.value,
+          }
+        ),
         badge: fields.image({
           label: 'Badge / image (optionnel)',
           directory: 'public/certifications',
           publicPath: '/certifications/',
+        }),
+        fichier: fields.file({
+          label: 'Fichier du certificat — PDF/image (optionnel)',
+          directory: 'public/certifications/fichiers',
+          publicPath: '/certifications/fichiers/',
         }),
         date: fields.date({ label: "Date d'obtention" }),
         ordre: fields.integer({ label: 'Ordre (dans son domaine, croissant)', defaultValue: 0 }),

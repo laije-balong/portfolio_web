@@ -49,6 +49,15 @@ const articles = defineCollection({
   }),
 });
 
+/* Preuve de vérification d'une certification : Credly, Coursera, Drive… */
+const preuve = z.object({
+  source: z
+    .enum(['credly', 'coursera', 'drive', 'linkedin', 'organisme', 'autre'])
+    .default('autre'),
+  url: z.string(),
+  label: z.string().nullish().transform((v) => v || undefined),
+});
+
 const certifications = defineCollection({
   loader: glob({ pattern: '**/*.mdoc', base: './src/content/certifications' }),
   schema: z.object({
@@ -56,8 +65,13 @@ const certifications = defineCollection({
     organisme: z.string(),
     domaine: z.string(),
     niveau: z.string().nullish().transform((v) => v || undefined),
-    credlyUrl: z.string().optional(),
+    // Plusieurs preuves possibles (source au choix). Voir aussi credlyUrl (legacy).
+    preuves: z.array(preuve).default([]),
+    // ⚠️ Ancien champ — gardé pour compatibilité. Préférer `preuves`.
+    credlyUrl: z.string().nullish().transform((v) => v || undefined),
     badge: z.string().nullish().transform((v) => v || undefined),
+    // Fichier du certificat (PDF/image) téléversé dans le dépôt (public/).
+    fichier: z.string().nullish().transform((v) => v || undefined),
     date: z.coerce.date().optional(),
     ordre: z.number().default(0),
   }),

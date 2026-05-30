@@ -53,6 +53,22 @@ export const PISTES: Record<Piste, { label: string; color: string }> = {
 
 export const pisteColor = (p: Piste) => PISTES[p]?.color ?? 'var(--c-accent)';
 
+/* Sources de vérification d'une certification (page /certifications).
+   Une certif peut avoir plusieurs preuves (ex. Credly + PDF dans le Drive). */
+export type PreuveSource =
+  | 'credly' | 'coursera' | 'drive' | 'linkedin' | 'organisme' | 'autre';
+
+export const PREUVE_SOURCES: Record<PreuveSource, { label: string; verbe: string }> = {
+  credly:    { label: 'Credly',              verbe: 'Vérifier sur Credly' },
+  coursera:  { label: 'Coursera',            verbe: 'Voir sur Coursera' },
+  drive:     { label: 'Google Drive',        verbe: 'Voir le certificat' },
+  linkedin:  { label: 'LinkedIn',            verbe: 'Voir sur LinkedIn' },
+  organisme: { label: "Site de l'organisme", verbe: "Vérifier chez l'organisme" },
+  autre:     { label: 'Autre',               verbe: 'Vérifier' },
+};
+
+export const preuveLabel = (s: PreuveSource) => PREUVE_SOURCES[s]?.verbe ?? 'Vérifier';
+
 export const TRACKS: Record<Track, string> = {
   A: 'OS & Kernel',
   B: 'Data Engineering & MLOps',

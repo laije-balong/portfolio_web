@@ -175,10 +175,31 @@ Le contenu de l'article en Markdown…
 | `organisme` | ✅ | Émetteur (Google, AWS…). |
 | `domaine`   | ✅ | **Sert de regroupement** sur la page (les certifs du même `domaine` sont ensemble). Garde des libellés cohérents, ex. « Data & Analyse ». |
 | `niveau`    | ❌ | Ex. « Associate », « Professional ». |
-| `credlyUrl` | ❌ | Lien de vérification Credly. |
-| `badge`     | ❌ | Image du badge. Via Keystatic : upload direct. À la main : place l'image dans `public/certifications/` et mets `badge: "/certifications/mon-badge.png"`. |
+| `preuves`   | ❌ | **Liste de liens de vérification** — autant que voulu, source au choix (voir ci-dessous). |
+| `fichier`   | ❌ | Le **certificat lui-même** (PDF ou image). Via Keystatic : upload direct. |
+| `badge`     | ❌ | Image du badge (logo de la certif). Via Keystatic : upload direct. À la main : place l'image dans `public/certifications/` et mets `badge: "/certifications/mon-badge.png"`. |
 | `date`      | ❌ | Date d'obtention (`AAAA-MM-JJ`), l'année s'affiche. |
 | `ordre`     | ❌ | Tri dans son domaine (croissant). |
+| `credlyUrl` | ❌ | *(ancien)* Lien Credly unique. Encore supporté, mais préfère `preuves`. |
+
+### Sources de vérification (`preuves`)
+
+Une certification n'est pas forcément vérifiable sur Credly : tu peux choisir la
+**source** de chaque preuve. Dans Keystatic, sous « Preuves de vérification », clique
+sur « + », choisis la source dans le menu et colle le lien. Tu peux en mettre
+**plusieurs** (ex. Coursera **et** Credly **et** le PDF). Sources disponibles :
+
+| `source`    | Affiché comme |
+| ----------- | ------------- |
+| `credly`    | Vérifier sur Credly |
+| `coursera`  | Voir sur Coursera |
+| `drive`     | Voir le certificat *(lien Google Drive)* |
+| `linkedin`  | Voir sur LinkedIn |
+| `organisme` | Vérifier chez l'organisme |
+| `autre`     | Vérifier *(ou ton `label` personnalisé)* |
+
+> 💡 **Pas besoin d'uploader un PDF déjà sur Google Drive** : choisis la source
+> `drive` et colle le lien de partage — le fichier reste sur ton Drive.
 
 ### Exemple
 
@@ -188,7 +209,13 @@ nom: "AWS Certified Cloud Practitioner"
 organisme: "Amazon Web Services"
 domaine: "Cloud & Infrastructure"
 niveau: "Foundational"
-credlyUrl: "https://credly.com/badges/xxxx"
+preuves:
+  - source: credly
+    url: "https://credly.com/badges/xxxx"
+    label: ""
+  - source: drive
+    url: "https://drive.google.com/file/d/xxxx/view"
+    label: "Certificat (PDF)"
 badge: "/certifications/aws-ccp.png"
 date: 2026-05-01
 ordre: 1
@@ -199,6 +226,11 @@ facturation, architecture de base.
 
 > Le **regroupement par domaine** est automatique : crée un nouveau `domaine` et
 > une nouvelle section apparaît sur `/certifications`.
+
+> **Où sont stockés les badges et PDF téléversés ?** Dans ton dépôt Git
+> (`public/certifications/` pour les badges, `public/certifications/fichiers/` pour
+> les PDF), versionnés et servis comme fichiers statiques — **aucune base de données
+> nécessaire**. À réserver à des fichiers raisonnables (badges en Ko, PDF en Mo).
 
 ---
 
