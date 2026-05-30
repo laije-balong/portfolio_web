@@ -10,7 +10,7 @@ const livrable = z.object({
 });
 
 const projets = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/projets' }),
+  loader: glob({ pattern: '**/*.mdoc', base: './src/content/projets' }),
   schema: z.object({
     titre: z.string(),
     resume: z.string(),
@@ -18,12 +18,14 @@ const projets = defineCollection({
       'Systèmes', 'Data-ML', 'Business-Analysis', 'Sécurité', 'Architecture', 'Maths',
     ]),
     type: z.enum(['repo', 'etude-de-cas', 'dashboard', 'document', 'analyse']),
-    track: z.enum(['A', 'B', 'C', 'D', 'E', 'F']).optional(),
-    niveau: z.string().optional(),
+    // tolère la chaîne vide écrite par Keystatic → undefined
+    track: z.enum(['A', 'B', 'C', 'D', 'E', 'F']).or(z.literal('')).nullish()
+      .transform((v) => (v ? v : undefined)),
+    niveau: z.string().nullish().transform((v) => v || undefined),
     statut: z.enum(['planifié', 'en-cours', 'terminé']),
-    phase: z.number().optional(),
+    phase: z.number().nullish().transform((v) => v ?? undefined),
     dateDebut: z.coerce.date(),
-    dateFin: z.coerce.date().optional(),
+    dateFin: z.coerce.date().nullish().transform((v) => v ?? undefined),
     technos: z.array(z.string()).default([]),
     methodes: z.array(z.string()).default([]),
     livrables: z.array(livrable).default([]),
@@ -34,7 +36,7 @@ const projets = defineCollection({
 });
 
 const articles = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/articles' }),
+  loader: glob({ pattern: '**/*.mdoc', base: './src/content/articles' }),
   schema: z.object({
     titre: z.string(),
     resume: z.string(),
@@ -48,7 +50,7 @@ const articles = defineCollection({
 });
 
 const certifications = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/certifications' }),
+  loader: glob({ pattern: '**/*.mdoc', base: './src/content/certifications' }),
   schema: z.object({
     nom: z.string(),
     organisme: z.string(),

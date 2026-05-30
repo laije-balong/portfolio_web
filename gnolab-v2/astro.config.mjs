@@ -1,11 +1,17 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
+import react from '@astrojs/react';
+import markdoc from '@astrojs/markdoc';
+import keystatic from '@keystatic/astro';
 import sitemap from '@astrojs/sitemap';
+import node from '@astrojs/node';
 
 // https://astro.build/config
-// NB : l'intégration Keystatic (+ react + adapter node) sera ajoutée une fois
-//      l'installation terminée et le design system validé.
 export default defineConfig({
   site: 'https://gnolab.dev',
-  integrations: [sitemap()],
+  // Site statique par défaut ; les routes d'admin Keystatic sont rendues
+  // à la demande (prerender:false) → l'adapter node permet au build de passer.
+  output: 'static',
+  adapter: node({ mode: 'standalone' }),
+  integrations: [react(), markdoc(), keystatic(), sitemap()],
 });

@@ -1,8 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
-import Button from '../components/ui/Button.astro';
-import Stat from '../components/ui/Stat.astro';
+import Hero from '../components/layout/Hero.astro';
 import ProjectCard from '../components/cards/ProjectCard.astro';
 import ArticleCard from '../components/cards/ArticleCard.astro';
 
@@ -20,31 +19,7 @@ const nbTermines = projets.filter((p) => p.data.statut === 'terminé').length;
 const nbArticles = articles.length;
 ---
 <Base>
-  <!-- HERO -->
-  <section class="hero">
-    <div class="container hero__inner">
-      <p class="eyebrow">Ingénieur Systèmes · Business Analyst · Brazzaville</p>
-      <h1 class="hero__title">
-        Construire des systèmes qui fonctionnent.<br />
-        <span class="hero__accent">Comprendre le besoin qui les justifie.</span>
-      </h1>
-      <p class="hero__lead">
-        Je documente une trajectoire d'ingénierie : du transistor au scheduler,
-        de l'adresse virtuelle au cache L1 — et du besoin métier au business case.
-        Chaque projet est une preuve.
-      </p>
-      <div class="hero__cta">
-        <Button href="/projets">Voir les projets</Button>
-        <Button href="/parcours" variant="ghost">Mon parcours →</Button>
-      </div>
-      <div class="hero__stats">
-        <Stat value={`${nbProjets}`} label="Projets" />
-        <Stat value={`${nbTermines}`} label="Terminés" />
-        <Stat value={`${nbArticles}`} label="Articles" />
-        <Stat value="14" label="Certifications" />
-      </div>
-    </div>
-  </section>
+  <Hero nbProjets={nbProjets} nbTermines={nbTermines} nbArticles={nbArticles} />
 
   <!-- PROJETS PHARES -->
   {featured.length > 0 && (
@@ -99,31 +74,6 @@ const nbArticles = articles.length;
 </Base>
 
 <style>
-  .hero { padding-block: var(--sp-16) var(--sp-12); position: relative; }
-  .hero::before {
-    content: '';
-    position: absolute; inset: 0;
-    background: radial-gradient(60% 50% at 50% 0%, var(--c-accent-soft), transparent 70%);
-    pointer-events: none;
-  }
-  .hero__inner { position: relative; max-width: 880px; }
-  .hero__title {
-    font-size: clamp(2rem, 5vw, var(--fs-4xl));
-    margin-top: var(--sp-4);
-  }
-  .hero__accent { color: var(--c-accent); }
-  .hero__lead {
-    margin-top: var(--sp-5);
-    font-size: var(--fs-md);
-    color: var(--c-text-muted);
-    max-width: 60ch;
-  }
-  .hero__cta { display: flex; gap: var(--sp-3); margin-top: var(--sp-6); flex-wrap: wrap; }
-  .hero__stats {
-    display: flex; gap: var(--sp-8); margin-top: var(--sp-10); flex-wrap: wrap;
-    padding-top: var(--sp-6); border-top: 1px solid var(--c-line);
-  }
-
   .sec-head {
     display: flex; align-items: baseline; justify-content: space-between;
     gap: var(--sp-4); margin-bottom: var(--sp-6);
