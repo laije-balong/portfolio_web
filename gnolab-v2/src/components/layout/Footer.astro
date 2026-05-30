@@ -1,23 +1,35 @@
 ---
+import { site, contactList } from '../../lib/site';
 const year = 2026; // statique : Date.now() indisponible côté build sandbox
+// Liens : contacts centralisés (site.ts) + lien direct vers la section contact
 const links = [
-  { href: 'https://github.com/laije-belthassar', label: 'GitHub' },
-  { href: 'https://credly.com/users/laije-belthassar', label: 'Credly' },
+  { href: '/a-propos#contact', label: 'Contact' },
+  ...contactList.map((c) => ({ href: c.href, label: c.label })),
 ];
 ---
 <footer class="ftr">
   <div class="container ftr__inner">
     <div class="ftr__brand">
-      <span class="ftr__name">GnoLab</span>
+      <span class="ftr__name">{site.brand}</span>
       <p class="ftr__tag">Visez la précision, maîtrisez la décision.</p>
     </div>
     <nav class="ftr__links" aria-label="Liens secondaires">
-      {links.map((l) => <a href={l.href} class="ftr__link">{l.label}</a>)}
+      {links.map((l) => {
+        const ext = l.href.startsWith('http');
+        return (
+          <a
+            href={l.href}
+            class="ftr__link"
+            target={ext ? '_blank' : undefined}
+            rel={ext ? 'noopener' : undefined}
+          >{l.label}</a>
+        );
+      })}
     </nav>
   </div>
   <div class="container ftr__bottom">
-    <span>BALONG Laije Belthassar — Brazzaville, Congo</span>
-    <span>© {year} GnoLab</span>
+    <span>{site.author} — {site.location}</span>
+    <span>© {year} {site.brand}</span>
   </div>
 </footer>
 

@@ -248,6 +248,39 @@ fautif. C'est voulu : ça empêche de publier un contenu cassé.
 
 ---
 
+## 👤 Tes infos perso, contact et identité — `src/lib/site.ts`
+
+Ton **nom, rôle, localisation, tagline** et tes **liens de contact** (email,
+LinkedIn, GitHub, Credly) ne sont **pas** du contenu Keystatic : ils sont centralisés
+dans un seul fichier de config, **`src/lib/site.ts`**. Édite-le dans VS Code.
+
+- Pour **changer une valeur** (ex. ton email) : modifie le champ correspondant.
+- Pour **masquer un contact** : passe son `show: true` à `show: false`.
+- ⚠️ Certaines valeurs sont marquées `// À VÉRIFIER` (email, URL LinkedIn…) :
+  **vérifie-les**, ce sont des suppositions de départ.
+
+La **page « À propos »** ([src/pages/a-propos.astro](src/pages/a-propos.astro))
+contient ta **bio** : les paragraphes marqués `✏️` sont à personnaliser. Tu peux
+aussi y mettre ta photo (ajoute `public/avatar.jpg` puis adapte le bloc avatar).
+
+Les **images de partage** (aperçu sur LinkedIn/WhatsApp/X…) sont **générées
+automatiquement par page** au build : chaque projet, article et page reçoit sa
+propre image avec son titre. Rien à faire — c'est automatique. (Pour changer le
+style commun, c'est `src/lib/og-template.ts`.)
+
+### 💬 Activer le formulaire de contact
+
+Le formulaire de la page « À propos » utilise **Web3Forms** (gratuit). Pour
+l'activer :
+1. Va sur https://web3forms.com → « Create Access Key » (saisis ton email, confirme).
+2. Copie la clé reçue dans `src/lib/site.ts` → `contactForm.web3formsKey: 'TA_CLE'`.
+3. Les messages arriveront sur l'email associé à la clé.
+
+Tant que la clé est vide, le formulaire est **masqué** et seuls les liens de
+contact (email, LinkedIn…) s'affichent — le site reste fonctionnel.
+
+---
+
 ## 🆘 Rappels rapides
 
 - Dates : toujours `AAAA-MM-JJ` (ex. `2026-05-30`).

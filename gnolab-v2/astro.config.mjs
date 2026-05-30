@@ -17,7 +17,7 @@ export default defineConfig({
     react(),
     markdoc(),
     keystatic(),
-    // Exclut le styleguide interne /design du plan du site public
-    sitemap({ filter: (page) => !page.includes('/design') }),
+    // Sitemap : exclut le styleguide interne /design et les images OG générées
+    sitemap({ filter: (page) => !page.includes('/design') && !page.includes('/og/') }),
   ],
 });

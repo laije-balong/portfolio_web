@@ -34,9 +34,11 @@ src/
 │   ├── certifications/ # certifications (regroupées par domaine)
 │   └── jalons/         # jalons de la page /parcours (timeline éditable)
 ├── content.config.ts   # schémas Zod (validation au build) — SOURCE DE VÉRITÉ des données
-├── pages/              # routes Astro
+├── pages/              # routes Astro (+ pages/og/ = images OG générées)
 ├── components/         # ui/, cards/, layout/
 ├── layouts/            # Base.astro
+├── lib/site.ts         # config centrale : identité, contact, formulaire, liens
+├── lib/og-template.ts  # gabarit SVG des images Open Graph (1200×630)
 ├── lib/taxonomy.ts     # libellés/couleurs des domaines, statuts, pistes, tracks
 ├── scripts/            # particles/ + utils/ (système de particules SVG = mini data-viz)
 └── styles/             # tokens.css (design tokens), base.css, particles.css
@@ -76,6 +78,24 @@ keystatic.config.ts     # formulaires d'édition — DOIT rester aligné avec co
    `if (import.meta.env.PROD) return Astro.redirect('/404')` + exclu du sitemap
    (filtre dans `astro.config.mjs`) + non lié dans la nav. Même motif pour toute
    page interne à ne pas exposer publiquement.
+
+8. **Identité & contact centralisés** dans `src/lib/site.ts` (auteur, rôle,
+   localisation, tagline, URL, image OG, et `contact` / `contactList`). Édite ce
+   fichier — pas en dur dans les pages. Utilisé par /a-propos, le Footer et les meta.
+
+9. **Open Graph — auto par page.** Une image OG (1200×630) est générée **par page**
+   au build par l'endpoint `src/pages/og/[...slug].png.ts` (rendu SVG → PNG via
+   `sharp`, 100 % hors-ligne). Le gabarit/design est dans `src/lib/og-template.ts`
+   (couleurs = tokens). `Base.astro` dérive automatiquement l'URL absolue
+   `/og/<slug>.png` depuis le chemin courant (override possible via prop `ogImage`).
+   Pour ajouter une page au catalogue OG, ajoute son entrée dans le `getStaticPaths`
+   de l'endpoint. `/og/` est exclu du sitemap (filtre `astro.config.mjs`).
+
+10. **Formulaire de contact.** Site statique → service externe **Web3Forms**.
+    La clé est dans `src/lib/site.ts` (`contactForm.web3formsKey`). Tant qu'elle est
+    vide, `contactFormEnabled` est faux et le formulaire est masqué (seuls les liens
+    de contact s'affichent). Soumission AJAX (pas de redirection) gérée dans
+    `src/pages/a-propos.astro`.
 
 ## Contenu : voir GUIDE-CONTENU.md
 

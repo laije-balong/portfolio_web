@@ -45,6 +45,11 @@ ajout, modification, suppression, et la liste des champs de chaque type.
 En résumé : `npm run dev` → http://localhost:4321/keystatic → on remplit des
 formulaires → `git commit` + `git push`.
 
+> **Infos perso, contact & formulaire** (nom, rôle, email, LinkedIn, clé du
+> formulaire de contact…) : centralisés dans [src/lib/site.ts](src/lib/site.ts).
+> **Images de partage (Open Graph)** : générées automatiquement par page au build
+> (voir [GUIDE-CONTENU.md](./GUIDE-CONTENU.md)).
+
 ## 📂 Structure
 
 ```
@@ -54,7 +59,10 @@ src/
 ├── pages/              # routes : /, /projets, /blog, /certifications, /parcours, /a-propos, /design
 ├── components/         # ui/, cards/, layout/
 ├── layouts/            # Base.astro
+├── lib/site.ts         # identité, contact, formulaire (config centrale)
 ├── lib/taxonomy.ts     # libellés, couleurs, pistes, tracks
+├── lib/og-template.ts  # gabarit SVG des images Open Graph
+├── pages/og/           # endpoint : 1 image OG générée par page (build)
 ├── scripts/            # système de particules (mini data-viz SVG)
 └── styles/             # tokens.css (design tokens), base.css, particles.css
 keystatic.config.ts     # formulaires d'édition Keystatic

@@ -13,10 +13,15 @@ interface Props {
 const {
   title = 'GnoLab — Ingénieur Systèmes & Business Analyst',
   description = 'Portfolio de BALONG Laije Belthassar : ingénierie systèmes, data, business analysis. Projets, parcours et publications techniques depuis Brazzaville.',
-  ogImage = '/og-cover.png',
+  ogImage,
 } = Astro.props;
 
-const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url).toString();
+const base = Astro.site ?? Astro.url;
+const canonical = new URL(Astro.url.pathname, base).toString();
+// Image OG générée par page (voir src/pages/og/[...slug].png.ts) ; dérivée du
+// chemin courant, sauf si un `ogImage` explicite est fourni en prop.
+const ogSlug = Astro.url.pathname.replace(/^\/+|\/+$/g, '') || 'index';
+const ogImageUrl = new URL(ogImage ?? `/og/${ogSlug}.png`, base).toString();
 ---
 <!doctype html>
 <html lang="fr" data-theme="dark">
@@ -31,11 +36,18 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url).toString(
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="GnoLab" />
+    <meta property="og:locale" content="fr_FR" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content={ogImage} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta property="og:url" content={canonical} />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
 
     <!-- Polices : chargées en async pour éviter le FOIT -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
