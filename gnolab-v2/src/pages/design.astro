@@ -6,6 +6,12 @@ import Tag from '../components/ui/Tag.astro';
 import Stat from '../components/ui/Stat.astro';
 import { DOMAINES, STATUTS, DOMAINE_LIST } from '../lib/taxonomy';
 
+// Styleguide = outil de développement interne. Visible uniquement en local
+// (`npm run dev`). En production il est masqué (redirige vers 404).
+if (import.meta.env.PROD) {
+  return Astro.redirect('/404');
+}
+
 const colorTokens = [
   ['--c-bg', 'Fond abyssal'], ['--c-surface-1', 'Surface 1'], ['--c-surface-2', 'Surface 2'],
   ['--c-surface-3', 'Surface 3'], ['--c-accent', 'Accent signal'], ['--c-text', 'Texte'],

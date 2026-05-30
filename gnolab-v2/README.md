@@ -1,43 +1,82 @@
-# Astro Starter Kit: Minimal
+# Portfolio GnoLab — v2
+
+Portfolio personnel de **BALONG Laije Belthassar (GnoLab)**.
+Site **statique**, en **français**, mettant en avant une double trajectoire :
+**Ingénierie Systèmes** et **Business Analysis**.
+
+> Refonte v2 (branche `v2-astro`). L'ancien site reste intact sur `main`.
+
+## 🧱 Stack
+
+- **[Astro 6](https://astro.build)** — sortie statique, zéro backend public.
+- **React 19** — îlots interactifs (système de particules du Hero).
+- **[Keystatic](https://keystatic.com)** — CMS Git : édition du contenu via une
+  interface web (`/keystatic`), qui écrit des fichiers Markdoc dans le dépôt.
+- **Markdoc** — format de contenu (`.mdoc`).
+- **Aucune base de données.** Tout le contenu est versionné dans `src/content/`.
+
+## 🚀 Démarrage
+
+Prérequis : **Node ≥ 22.12**.
 
 ```sh
-npm create astro@latest -- --template minimal
+npm install
+npm run dev      # site + éditeur sur http://localhost:4321
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+- Site : http://localhost:4321
+- Éditeur de contenu (Keystatic) : http://localhost:4321/keystatic
 
-## 🚀 Project Structure
+## 🧞 Commandes
 
-Inside of your Astro project, you'll see the following folders and files:
+| Commande          | Action                                            |
+| ----------------- | ------------------------------------------------- |
+| `npm install`     | Installe les dépendances                          |
+| `npm run dev`     | Serveur de dev + Keystatic (`localhost:4321`)     |
+| `npm run build`   | Build statique vers `./dist/` (valide le contenu) |
+| `npm run preview` | Prévisualise le build                             |
 
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+## ✍️ Modifier le contenu
+
+Projets, articles, certifications et jalons du parcours se gèrent **sans toucher
+au code**. Tout est expliqué dans **[GUIDE-CONTENU.md](./GUIDE-CONTENU.md)** :
+ajout, modification, suppression, et la liste des champs de chaque type.
+
+En résumé : `npm run dev` → http://localhost:4321/keystatic → on remplit des
+formulaires → `git commit` + `git push`.
+
+## 📂 Structure
+
+```
+src/
+├── content/            # contenu (.mdoc) : projets / articles / certifications / jalons
+├── content.config.ts   # schémas de validation (Zod)
+├── pages/              # routes : /, /projets, /blog, /certifications, /parcours, /a-propos, /design
+├── components/         # ui/, cards/, layout/
+├── layouts/            # Base.astro
+├── lib/taxonomy.ts     # libellés, couleurs, pistes, tracks
+├── scripts/            # système de particules (mini data-viz SVG)
+└── styles/             # tokens.css (design tokens), base.css, particles.css
+keystatic.config.ts     # formulaires d'édition Keystatic
+CLAUDE.md               # conventions de dev (pour l'IA et les contributeurs)
+GUIDE-CONTENU.md        # guide d'édition du contenu
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## 📄 Pages
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+Accueil · `/projets` (filtres + détail) · `/blog` (+ article) · `/certifications`
+· `/parcours` (timeline de jalons) · `/a-propos`.
 
-Any static assets, like images, can be placed in the `public/` directory.
+> `/design` est un **styleguide interne** : accessible uniquement en local
+> (`npm run dev`), masqué en production (redirige vers 404, hors sitemap).
 
-## 🧞 Commands
+## 🚧 Feuille de route
 
-All commands are run from the root of the project, from a terminal:
+- [ ] Migrer le contenu : ~60 projets, ~14 certifications, billets de blog.
+- [ ] Enrichir `/parcours` : phases M1→M24, double piste (collection `jalons` prête).
+- [ ] Images Open Graph (partage social).
+- [ ] Déploiement statique + CI (Cloudflare Pages / Netlify).
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+## 📜 Licence
 
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+Projet personnel — © BALONG Laije Belthassar (GnoLab).

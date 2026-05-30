@@ -13,5 +13,11 @@ export default defineConfig({
   // à la demande (prerender:false) → l'adapter node permet au build de passer.
   output: 'static',
   adapter: node({ mode: 'standalone' }),
-  integrations: [react(), markdoc(), keystatic(), sitemap()],
+  integrations: [
+    react(),
+    markdoc(),
+    keystatic(),
+    // Exclut le styleguide interne /design du plan du site public
+    sitemap({ filter: (page) => !page.includes('/design') }),
+  ],
 });
