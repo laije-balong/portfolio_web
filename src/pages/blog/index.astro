@@ -1,0 +1,41 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import ArticleCard from '../../components/cards/ArticleCard.astro';
+
+const articles = (await getCollection('articles'))
+  .filter((a) => a.data.publie)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+<Base title="Blog — GnoLab" description="Billets techniques : post-mortems, tutoriels, analyses systèmes et data.">
+  <section class="section">
+    <div class="container">
+      <p class="eyebrow">Publications</p>
+      <h1 class="ttl">Blog technique</h1>
+      <p class="lead text-muted">Post-mortems, plongées dans le code, et ce que chaque projet m'a appris.</p>
+
+      {articles.length > 0 ? (
+        <div class="grid">
+          {articles.map((a) => (
+            <ArticleCard
+              slug={a.id}
+              titre={a.data.titre}
+              resume={a.data.resume}
+              date={a.data.date}
+              tags={a.data.tags}
+              tempsLecture={a.data.tempsLecture}
+            />
+          ))}
+        </div>
+      ) : (
+        <p class="text-muted" style="margin-top:2rem">Aucun article publié pour l'instant.</p>
+      )}
+    </div>
+  </section>
+</Base>
+
+<style>
+  .ttl { font-size: var(--fs-3xl); margin-top: var(--sp-2); }
+  .lead { margin-top: var(--sp-3); max-width: 60ch; margin-bottom: var(--sp-6); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--sp-5); }
+</style>

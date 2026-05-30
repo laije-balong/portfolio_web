@@ -1,0 +1,44 @@
+---
+titre: "Refonte du système de gestion des patients — Hôpital de Loandjili"
+resume: "Analyse fonctionnelle complète d'un Système d'Information Hospitalier : BRD, BPMN AS-IS/TO-BE, UML, dashboard Power BI et business case sur 3 ans."
+domaine: "Business-Analysis"
+type: "etude-de-cas"
+niveau: "Avancé"
+statut: "en-cours"
+dateDebut: 2026-05-15
+technos: []
+methodes: ["BRD", "BPMN", "UML", "MoSCoW", "Power BI", "Business Case"]
+livrables:
+  - { type: "pdf", url: "#", label: "BRD complet (25+ exigences)" }
+  - { type: "bpmn", url: "#", label: "Parcours patient AS-IS / TO-BE" }
+  - { type: "powerbi", url: "#", label: "Dashboard direction" }
+  - { type: "slides", url: "#", label: "Soutenance" }
+featured: true
+ordre: 2
+---
+
+## Contexte
+
+L'Hôpital de Base de Loandjili (Pointe-Noire, 180 lits, 214 agents) doit se doter
+d'un Système d'Information Hospitalier d'ici 2027 dans le cadre de la réforme
+sanitaire. Dossiers patients papier, aucun système de rendez-vous, rapports tapés
+à la main : le diagnostic est lourd.
+
+## Démarche d'analyse
+
+- **5 personas** interviewés (directeur médical, urgences, laboratoire, accueil, direction).
+- **Processus AS-IS** modélisés en BPMN : parcours patient, résultats labo, rapport mensuel.
+- **Besoins exprimés vs besoins réels** distingués systématiquement.
+
+> Exemple : « je veux un logiciel simple » → besoin réel : *réduire de 3 à 1 la
+> ressaisie d'un même patient*.
+
+## Livrables
+
+| Livrable | Statut |
+|---|---|
+| BRD (25 exigences fonctionnelles + 8 non fonctionnelles) | En cours |
+| BPMN AS-IS / TO-BE (3 processus) | En cours |
+| Diagrammes UML (cas d'usage, séquence, classes) | À venir |
+| Dashboard Power BI (indicateurs Ministère) | À venir |
+| Business case + ROI 3 ans | À venir |
