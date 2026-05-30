@@ -1,0 +1,110 @@
+---
+import Badge from '../ui/Badge.astro';
+import Tag from '../ui/Tag.astro';
+import { DOMAINES, STATUTS, type Domaine, type Statut } from '../../lib/taxonomy';
+
+interface Props {
+  slug: string;
+  titre: string;
+  resume: string;
+  domaine: Domaine;
+  statut: Statut;
+  type: string;
+  technos?: string[];
+  methodes?: string[];
+  nbLivrables?: number;
+}
+const { slug, titre, resume, domaine, statut, type, technos = [], methodes = [], nbLivrables = 0 } = Astro.props;
+const dom = DOMAINES[domaine];
+const st = STATUTS[statut];
+const chips = [...technos, ...methodes].slice(0, 4);
+const typeLabel: Record<string, string> = {
+  repo: 'Projet', 'etude-de-cas': 'Étude de cas', dashboard: 'Dashboard',
+  document: 'Document', analyse: 'Analyse',
+};
+---
+<a href={`/projets/${slug}`} class="pcard reveal" style={`--dom:${dom.color}`}>
+  <div class="pcard__top">
+    <Badge label={dom.label} color={dom.color} />
+    <span class="pcard__type">{typeLabel[type] ?? type}</span>
+  </div>
+
+  <h3 class="pcard__title">{titre}</h3>
+  <p class="pcard__resume">{resume}</p>
+
+  {chips.length > 0 && (
+    <div class="pcard__chips">
+      {chips.map((c) => <Tag label={c} />)}
+    </div>
+  )}
+
+  <div class="pcard__foot">
+    <span class="pcard__status" style={`--st:${st.color}`}>
+      <span class="pcard__statusdot"></span>{st.label}
+    </span>
+    {nbLivrables > 0 && (
+      <span class="pcard__livr mono">{nbLivrables} livrable{nbLivrables > 1 ? 's' : ''}</span>
+    )}
+  </div>
+</a>
+
+<style>
+  .pcard {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-3);
+    padding: var(--sp-5);
+    background: var(--c-surface-1);
+    border: 1px solid var(--c-line);
+    border-radius: var(--radius-lg);
+    border-top: 2px solid var(--dom);
+    transition: transform var(--dur) var(--ease), border-color var(--dur) var(--ease),
+                box-shadow var(--dur) var(--ease);
+    height: 100%;
+  }
+  .pcard:hover {
+    transform: translateY(-4px);
+    border-color: color-mix(in srgb, var(--dom) 45%, var(--c-line));
+    box-shadow: var(--shadow);
+  }
+  .pcard__top { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3); }
+  .pcard__type {
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    color: var(--c-text-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .pcard__title { font-size: var(--fs-lg); color: var(--c-text); }
+  .pcard__resume {
+    color: var(--c-text-muted);
+    font-size: var(--fs-sm);
+    line-height: var(--lh-base);
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .pcard__chips { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+  .pcard__foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: auto;
+    padding-top: var(--sp-3);
+    border-top: 1px solid var(--c-line);
+  }
+  .pcard__status {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-2);
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    color: var(--st);
+  }
+  .pcard__statusdot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--st);
+  }
+  .pcard__livr { font-size: var(--fs-xs); color: var(--c-text-faint); }
+</style>

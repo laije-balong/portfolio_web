@@ -1,0 +1,89 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Hero from '../components/layout/Hero.astro';
+import ProjectCard from '../components/cards/ProjectCard.astro';
+import ArticleCard from '../components/cards/ArticleCard.astro';
+
+const projets = await getCollection('projets');
+const articles = (await getCollection('articles'))
+  .filter((a) => a.data.publie)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const featured = projets
+  .filter((p) => p.data.featured)
+  .sort((a, b) => a.data.ordre - b.data.ordre);
+
+const nbProjets = projets.length;
+const nbTermines = projets.filter((p) => p.data.statut === 'terminé').length;
+const nbArticles = articles.length;
+---
+<Base>
+  <Hero nbProjets={nbProjets} nbTermines={nbTermines} nbArticles={nbArticles} />
+
+  <!-- PROJETS PHARES -->
+  {featured.length > 0 && (
+    <section class="section">
+      <div class="container">
+        <div class="sec-head">
+          <h2>Projets phares</h2>
+          <a href="/projets" class="sec-head__link mono">Tout le catalogue →</a>
+        </div>
+        <div class="grid">
+          {featured.map((p) => (
+            <ProjectCard
+              slug={p.id}
+              titre={p.data.titre}
+              resume={p.data.resume}
+              domaine={p.data.domaine}
+              statut={p.data.statut}
+              type={p.data.type}
+              technos={p.data.technos}
+              methodes={p.data.methodes}
+              nbLivrables={p.data.livrables.length}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- DERNIERS ARTICLES -->
+  {articles.length > 0 && (
+    <section class="section">
+      <div class="container">
+        <div class="sec-head">
+          <h2>Dernières publications</h2>
+          <a href="/blog" class="sec-head__link mono">Tout le blog →</a>
+        </div>
+        <div class="grid">
+          {articles.slice(0, 3).map((a) => (
+            <ArticleCard
+              slug={a.id}
+              titre={a.data.titre}
+              resume={a.data.resume}
+              date={a.data.date}
+              tags={a.data.tags}
+              tempsLecture={a.data.tempsLecture}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+</Base>
+
+<style>
+  .sec-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: var(--sp-4); margin-bottom: var(--sp-6);
+  }
+  .sec-head h2 { font-size: var(--fs-2xl); }
+  .sec-head__link { font-size: var(--fs-sm); color: var(--c-accent); }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: var(--sp-5);
+  }
+</style>
