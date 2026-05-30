@@ -1,36 +1,48 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
-import { DOMAINES } from '../lib/taxonomy';
+import { PISTES, type Piste } from '../lib/taxonomy';
 
-// Timeline : projets ordonnés chronologiquement (phase 2 enrichira avec les jalons)
-const projets = (await getCollection('projets')).sort(
-  (a, b) => a.data.dateDebut.valueOf() - b.data.dateDebut.valueOf()
-);
+// Timeline éditable : jalons de la collection « parcours » (src/content/jalons/),
+// triés chronologiquement (du plus ancien au plus récent). Géré via /keystatic.
+const jalons = (await getCollection('jalons')).sort((a, b) => {
+  const d = a.data.date.valueOf() - b.data.date.valueOf();
+  return d !== 0 ? d : a.data.ordre - b.data.ordre;
+});
 const fmt = (d: Date) => new Intl.DateTimeFormat('fr-FR', { month: 'short', year: 'numeric' }).format(d);
 ---
-<Base title="Parcours — GnoLab" description="Trajectoire d'ingénierie systèmes et de business analysis, projet par projet.">
+<Base title="Parcours — GnoLab" description="Trajectoire d'ingénierie systèmes et de business analysis, jalon par jalon.">
   <section class="section">
     <div class="container">
       <p class="eyebrow">Trajectoire</p>
       <h1 class="ttl">Mon parcours</h1>
       <p class="lead text-muted">
         De la mémoire manuelle en C aux études de cas Business Analysis — une progression
-        documentée, projet après projet. <span class="mono">(Timeline enrichie en phase 2 : phases, jalons, double piste.)</span>
+        documentée, sur une double piste : ingénierie systèmes et business analysis.
       </p>
 
-      <ol class="timeline">
-        {projets.map((p) => (
-          <li class="timeline__item reveal" style={`--dom:${DOMAINES[p.data.domaine].color}`}>
-            <span class="timeline__date mono">{fmt(p.data.dateDebut)}</span>
-            <div class="timeline__card">
-              <span class="timeline__dom mono">{DOMAINES[p.data.domaine].label}</span>
-              <a href={`/projets/${p.id}`} class="timeline__title">{p.data.titre}</a>
-              <p class="timeline__resume">{p.data.resume}</p>
-            </div>
-          </li>
-        ))}
-      </ol>
+      {jalons.length === 0 ? (
+        <p class="empty text-muted mono">Aucun jalon pour l'instant. Ajoute-en depuis <a href="/keystatic">/keystatic</a> → « Parcours (jalons) ».</p>
+      ) : (
+        <ol class="timeline">
+          {jalons.map((j) => {
+            const piste = PISTES[j.data.piste as Piste] ?? PISTES.transverse;
+            return (
+              <li class="timeline__item reveal" style={`--dom:${piste.color}`}>
+                <span class="timeline__date mono">{fmt(j.data.date)}</span>
+                <div class="timeline__card">
+                  <span class="timeline__dom mono">
+                    {piste.label}{j.data.phase ? ` · ${j.data.phase}` : ''}
+                    {j.data.encours && <span class="timeline__live"> · en cours</span>}
+                  </span>
+                  <h2 class="timeline__title">{j.data.titre}</h2>
+                  <p class="timeline__resume">{j.data.resume}</p>
+                </div>
+              </li>
+            );
+          })}
+        </ol>
+      )}
     </div>
   </section>
 </Base>
@@ -65,6 +77,9 @@ const fmt = (d: Date) => new Intl.DateTimeFormat('fr-FR', { month: 'short', year
     background: var(--dom); box-shadow: 0 0 10px var(--dom);
   }
   .timeline__dom { font-size: var(--fs-xs); color: var(--dom); }
+  .timeline__live { color: var(--c-status-progress, var(--c-accent)); }
+  .empty { margin-top: var(--sp-6); }
+  .empty a { color: var(--c-accent); }
   .timeline__title { display: block; font-family: var(--font-display); font-weight: var(--fw-bold); font-size: var(--fs-md); color: var(--c-text); margin-top: var(--sp-1); }
   .timeline__title:hover { color: var(--c-accent); }
   .timeline__resume { color: var(--c-text-muted); font-size: var(--fs-sm); margin-top: var(--sp-2); }

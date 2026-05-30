@@ -55,10 +55,27 @@ const certifications = defineCollection({
     nom: z.string(),
     organisme: z.string(),
     domaine: z.string(),
+    niveau: z.string().nullish().transform((v) => v || undefined),
     credlyUrl: z.string().optional(),
+    badge: z.string().nullish().transform((v) => v || undefined),
     date: z.coerce.date().optional(),
     ordre: z.number().default(0),
   }),
 });
 
-export const collections = { projets, articles, certifications };
+/* Jalons du parcours : timeline éditable à la main (formations, phases,
+   étapes clés…), indépendante des projets. Double piste Systèmes / BA. */
+const jalons = defineCollection({
+  loader: glob({ pattern: '**/*.mdoc', base: './src/content/jalons' }),
+  schema: z.object({
+    titre: z.string(),
+    resume: z.string(),
+    date: z.coerce.date(),
+    piste: z.enum(['systemes', 'business', 'transverse']).default('transverse'),
+    phase: z.string().nullish().transform((v) => v || undefined),
+    encours: z.boolean().default(false),
+    ordre: z.number().default(0),
+  }),
+});
+
+export const collections = { projets, articles, certifications, jalons };

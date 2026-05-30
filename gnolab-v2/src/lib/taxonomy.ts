@@ -41,6 +41,18 @@ export const LIVRABLES: Record<LivrableType, { label: string }> = {
   document: { label: 'Document' },
 };
 
+/* Pistes du parcours (page /parcours) : la double trajectoire Systèmes / BA,
+   plus une piste « transverse » pour les jalons communs (formations, certifs…). */
+export type Piste = 'systemes' | 'business' | 'transverse';
+
+export const PISTES: Record<Piste, { label: string; color: string }> = {
+  systemes:   { label: 'Ingénierie Systèmes', color: 'var(--c-systemes)' },
+  business:   { label: 'Business Analysis',    color: 'var(--c-business)' },
+  transverse: { label: 'Transverse',           color: 'var(--c-accent)' },
+};
+
+export const pisteColor = (p: Piste) => PISTES[p]?.color ?? 'var(--c-accent)';
+
 export const TRACKS: Record<Track, string> = {
   A: 'OS & Kernel',
   B: 'Data Engineering & MLOps',

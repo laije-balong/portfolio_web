@@ -8,6 +8,7 @@ const parDomaine = certs.reduce((acc, c) => {
   (acc[c.data.domaine] ??= []).push(c);
   return acc;
 }, {} as Record<string, typeof certs>);
+const fmtAnnee = (d?: Date) => (d ? new Intl.DateTimeFormat('fr-FR', { year: 'numeric' }).format(d) : null);
 ---
 <Base title="Certifications — GnoLab" description="14 certifications professionnelles : data, systèmes, sécurité, gestion de projet.">
   <section class="section">
@@ -22,8 +23,14 @@ const parDomaine = certs.reduce((acc, c) => {
           <div class="grid">
             {list.map((c) => (
               <div class="cert reveal">
+                {c.data.badge && (
+                  <img class="cert__badge" src={c.data.badge} alt={`Badge ${c.data.nom}`} loading="lazy" width="64" height="64" />
+                )}
                 <h3 class="cert__nom">{c.data.nom}</h3>
-                <p class="cert__org mono">{c.data.organisme}</p>
+                <p class="cert__org mono">
+                  {c.data.organisme}{c.data.niveau ? ` · ${c.data.niveau}` : ''}
+                  {fmtAnnee(c.data.date) ? ` · ${fmtAnnee(c.data.date)}` : ''}
+                </p>
                 {c.data.credlyUrl && (
                   <a href={c.data.credlyUrl} class="cert__link mono" target="_blank" rel="noopener">
                     Vérifier sur Credly →
@@ -53,6 +60,7 @@ const parDomaine = certs.reduce((acc, c) => {
     border: 1px solid var(--c-line);
     border-radius: var(--radius-lg);
   }
+  .cert__badge { width: 64px; height: 64px; object-fit: contain; margin-bottom: var(--sp-3); }
   .cert__nom { font-size: var(--fs-md); color: var(--c-text); }
   .cert__org { font-size: var(--fs-sm); color: var(--c-text-muted); margin-top: var(--sp-1); }
   .cert__link { display: inline-block; margin-top: var(--sp-3); font-size: var(--fs-sm); color: var(--c-accent); }
