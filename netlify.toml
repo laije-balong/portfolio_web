@@ -5,8 +5,26 @@
 # C'est ce dossier qu'il faut publier (sinon Netlify ne trouve pas index.html).
 
 [build]
-  command = "npm run build"
+  # Après le build, on purge le bundle de l'admin Keystatic : il est émis dans
+  # dist/client/_astro/ mais AUCUNE page publique ne le charge (la route /keystatic
+  # est server-only et n'est pas déployée). ~2,7 Mo de poids mort retirés du CDN.
+  command = "npm run build && rm -f dist/client/_astro/keystatic-page.*.js"
   publish = "dist/client"
 
 [build.environment]
   NODE_VERSION = "22.12.0"
+
+# Sécurité : l'admin Keystatic est un outil 100 % local (rendu serveur, jamais
+# déployé dans le build statique). Par précaution, on bloque explicitement la
+# route /keystatic en 404 — au cas où la config de déploiement changerait un jour.
+[[redirects]]
+  from = "/keystatic"
+  to = "/404"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/keystatic/*"
+  to = "/404"
+  status = 404
+  force = true
