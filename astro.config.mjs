@@ -8,7 +8,7 @@ import node from '@astrojs/node';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://gnolab.dev',
+  site: 'https://gnolab-portfolio.netlify.app',
   // Site statique par défaut ; les routes d'admin Keystatic sont rendues
   // à la demande (prerender:false) → l'adapter node permet au build de passer.
   output: 'static',
