@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "titre": {
+      "type": "string"
+    },
+    "resume": {
+      "type": "string"
+    },
+    "date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "piste": {
+      "default": "transverse",
+      "type": "string",
+      "enum": [
+        "systemes",
+        "business",
+        "transverse"
+      ]
+    },
+    "phase": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "encours": {
+      "default": false,
+      "type": "boolean"
+    },
+    "ordre": {
+      "default": 0,
+      "type": "number"
+    },
+    "$schema": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "titre",
+    "resume",
+    "date"
+  ]
+}
