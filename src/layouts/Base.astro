@@ -40,11 +40,25 @@ const ogImageUrl = new URL(ogImage ?? `/og/${ogSlug}.png`, base).toString();
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Thème : applique le choix (localStorage) ou la préférence système AVANT
+         le premier rendu, pour éviter tout flash de couleur (FOUC). -->
+    <script is:inline>
+      (() => {
+        try {
+          const stored = localStorage.getItem('theme');
+          const theme = stored
+            || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+          document.documentElement.setAttribute('data-theme', theme);
+        } catch (_) { /* localStorage indisponible → on garde le défaut dark */ }
+      })();
+    </script>
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta name="theme-color" content="#020a14" />
     <link rel="canonical" href={canonical} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <!-- Autodécouverte du flux RSS du blog -->
+    <link rel="alternate" type="application/rss+xml" title="GnoLab — Blog" href="/rss.xml" />
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />

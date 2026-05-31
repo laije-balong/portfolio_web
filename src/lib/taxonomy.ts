@@ -12,7 +12,6 @@ export type Domaine =
   | 'Maths';
 
 export type Statut = 'planifié' | 'en-cours' | 'terminé';
-export type Track = 'A' | 'B' | 'C' | 'D' | 'E' | 'F';
 export type LivrableType =
   | 'github' | 'pdf' | 'bpmn' | 'powerbi' | 'slides' | 'demo' | 'document';
 
@@ -51,8 +50,6 @@ export const PISTES: Record<Piste, { label: string; color: string }> = {
   transverse: { label: 'Transverse',           color: 'var(--c-accent)' },
 };
 
-export const pisteColor = (p: Piste) => PISTES[p]?.color ?? 'var(--c-accent)';
-
 /* Sources de vérification d'une certification (page /certifications).
    Une certif peut avoir plusieurs preuves (ex. Credly + PDF dans le Drive). */
 export type PreuveSource =
@@ -68,18 +65,6 @@ export const PREUVE_SOURCES: Record<PreuveSource, { label: string; verbe: string
 };
 
 export const preuveLabel = (s: PreuveSource) => PREUVE_SOURCES[s]?.verbe ?? 'Vérifier';
-
-export const TRACKS: Record<Track, string> = {
-  A: 'OS & Kernel',
-  B: 'Data Engineering & MLOps',
-  C: 'Architecture & Systèmes distribués',
-  D: 'Mathématiques avancées',
-  E: 'Leadership & Open Source',
-  F: 'Sécurité & Infrastructure',
-};
-
-export const domaineColor = (d: Domaine) => DOMAINES[d]?.color ?? 'var(--c-accent)';
-export const statutColor = (s: Statut) => STATUTS[s]?.color ?? 'var(--c-text-faint)';
 
 /** Liste ordonnée des domaines pour les filtres. */
 export const DOMAINE_LIST = Object.keys(DOMAINES) as Domaine[];

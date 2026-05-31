@@ -13,8 +13,13 @@ interface Props {
   technos?: string[];
   methodes?: string[];
   nbLivrables?: number;
+  /** Lien du dépôt (livrable de type github) — affiché en bas de carte si présent. */
+  githubUrl?: string;
 }
-const { slug, titre, resume, domaine, statut, type, technos = [], methodes = [], nbLivrables = 0 } = Astro.props;
+const {
+  slug, titre, resume, domaine, statut, type,
+  technos = [], methodes = [], nbLivrables = 0, githubUrl,
+} = Astro.props;
 const dom = DOMAINES[domaine];
 const st = STATUTS[statut];
 const chips = [...technos, ...methodes].slice(0, 4);
@@ -23,13 +28,18 @@ const typeLabel: Record<string, string> = {
   document: 'Document', analyse: 'Analyse',
 };
 ---
-<a href={`/projets/${slug}`} class="pcard reveal" style={`--dom:${dom.color}`}>
+<!-- La carte n'est plus un <a> global (interdit d'imbriquer un lien GitHub
+     dedans) : le titre porte un lien « étiré » via ::after qui couvre toute
+     la carte, et le lien GitHub passe au-dessus grâce à son z-index. -->
+<div class="pcard reveal" style={`--dom:${dom.color}`}>
   <div class="pcard__top">
     <Badge label={dom.label} color={dom.color} />
     <span class="pcard__type">{typeLabel[type] ?? type}</span>
   </div>
 
-  <h3 class="pcard__title">{titre}</h3>
+  <h3 class="pcard__title">
+    <a class="pcard__link" href={`/projets/${slug}`}>{titre}</a>
+  </h3>
   <p class="pcard__resume">{resume}</p>
 
   {chips.length > 0 && (
@@ -45,11 +55,26 @@ const typeLabel: Record<string, string> = {
     {nbLivrables > 0 && (
       <span class="pcard__livr mono">{nbLivrables} livrable{nbLivrables > 1 ? 's' : ''}</span>
     )}
+    {githubUrl && (
+      <a
+        class="pcard__gh mono"
+        href={githubUrl}
+        target="_blank"
+        rel="noopener"
+        aria-label={`Code source de ${titre} sur GitHub`}
+      >
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+          <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+        </svg>
+        Code
+      </a>
+    )}
   </div>
-</a>
+</div>
 
 <style>
   .pcard {
+    position: relative;
     display: flex;
     flex-direction: column;
     gap: var(--sp-3);
@@ -67,6 +92,9 @@ const typeLabel: Record<string, string> = {
     border-color: color-mix(in srgb, var(--dom) 45%, var(--c-line));
     box-shadow: var(--shadow);
   }
+  .pcard:focus-within {
+    border-color: color-mix(in srgb, var(--dom) 45%, var(--c-line));
+  }
   .pcard__top { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3); }
   .pcard__type {
     font-family: var(--font-mono);
@@ -76,6 +104,14 @@ const typeLabel: Record<string, string> = {
     letter-spacing: 0.08em;
   }
   .pcard__title { font-size: var(--fs-lg); color: var(--c-text); }
+  .pcard__link { color: inherit; text-decoration: none; }
+  /* Lien « étiré » : couvre toute la carte tout en laissant le lien GitHub cliquable */
+  .pcard__link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius-lg);
+  }
   .pcard__resume {
     color: var(--c-text-muted);
     font-size: var(--fs-sm);
@@ -90,6 +126,7 @@ const typeLabel: Record<string, string> = {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: var(--sp-3);
     margin-top: auto;
     padding-top: var(--sp-3);
     border-top: 1px solid var(--c-line);
@@ -107,4 +144,15 @@ const typeLabel: Record<string, string> = {
     background: var(--st);
   }
   .pcard__livr { font-size: var(--fs-xs); color: var(--c-text-faint); }
+  /* Lien GitHub : au-dessus de la zone étirée, poussé à droite */
+  .pcard__gh {
+    position: relative;
+    z-index: 1;
+    display: inline-flex; align-items: center; gap: 4px;
+    margin-left: auto;
+    font-size: var(--fs-xs);
+    color: var(--c-text-muted);
+    transition: color var(--dur) var(--ease);
+  }
+  .pcard__gh:hover { color: var(--c-accent); }
 </style>

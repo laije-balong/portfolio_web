@@ -43,6 +43,7 @@ const nbCertifs = certifications.length;
               technos={p.data.technos}
               methodes={p.data.methodes}
               nbLivrables={p.data.livrables.length}
+              githubUrl={p.data.livrables.find((l) => l.type === 'github')?.url}
             />
           ))}
         </div>

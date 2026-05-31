@@ -101,3 +101,47 @@
   --z-nav:     100;
   --z-overlay: 200;
 }
+
+/* ============================================================================
+   Thème clair — n'override QUE les couleurs (le reste des tokens est partagé).
+   Activé via [data-theme="light"] sur <html> (toggle + localStorage).
+   Accent teal assombri pour garder un bon contraste sur fond clair.
+   ========================================================================== */
+:root[data-theme="light"] {
+  /* ── Fond + surfaces ── */
+  --c-bg:            #f5f8fb;
+  --c-surface-1:     #ffffff;
+  --c-surface-2:     #eef3f8;
+  --c-surface-3:     #e2eaf2;
+  --c-line:          #d9e1ea;
+  --c-line-strong:   #bdc9d6;
+
+  /* ── Texte ── */
+  --c-text:          #0d1a28;
+  --c-text-muted:    #3e556b;
+  --c-text-faint:    #6a8198;
+
+  /* ── Accent (teal assombri pour le contraste sur clair) ── */
+  --c-accent:        #0fa183;
+  --c-accent-soft:   rgba(15, 161, 131, 0.12);
+  --c-accent-line:   rgba(15, 161, 131, 0.35);
+  --c-accent-strong: #0b8268;
+
+  /* ── Couleurs par domaine (assombries pour fond clair) ── */
+  --c-systemes:      #0fa183;
+  --c-data-ml:       #7c4dff;
+  --c-business:      #c08400;
+  --c-securite:      #d83a5b;
+  --c-architecture:  #2a7fd4;
+  --c-maths:         #0d9488;
+
+  /* ── Statuts ── */
+  --c-status-done:     #0fa183;
+  --c-status-progress: #c08400;
+  --c-status-planned:  #6a8198;
+
+  /* ── Ombres (plus légères sur clair) ── */
+  --shadow-sm: 0 1px 3px rgba(13, 26, 40, 0.08);
+  --shadow:    0 8px 24px rgba(13, 26, 40, 0.10);
+  --shadow-lg: 0 20px 50px rgba(13, 26, 40, 0.14);
+}

@@ -25,6 +25,23 @@ const isActive = (href: string) => path === href || path.startsWith(href + '/');
       ))}
     </nav>
 
+    <button class="hdr__theme" id="themeToggle" type="button"
+            aria-label="Changer de thème (clair / sombre)" title="Changer de thème">
+      <!-- Lune (visible en thème sombre → bascule vers clair) -->
+      <svg class="hdr__icon hdr__icon--moon" width="18" height="18" viewBox="0 0 24 24"
+           fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+           stroke-linejoin="round" aria-hidden="true">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+      </svg>
+      <!-- Soleil (visible en thème clair → bascule vers sombre) -->
+      <svg class="hdr__icon hdr__icon--sun" width="18" height="18" viewBox="0 0 24 24"
+           fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+           stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="4"/>
+        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+      </svg>
+    </button>
+
     <button class="hdr__burger" aria-label="Menu" aria-expanded="false" id="burger">
       <span></span><span></span><span></span>
     </button>
@@ -37,6 +54,15 @@ const isActive = (href: string) => path === href || path.startsWith(href + '/');
   burger?.addEventListener('click', () => {
     const open = hdr?.classList.toggle('is-open');
     burger.setAttribute('aria-expanded', String(open));
+  });
+
+  // Bascule de thème (le thème initial est appliqué par le script inline du <head>).
+  const themeBtn = document.getElementById('themeToggle');
+  themeBtn?.addEventListener('click', () => {
+    const root = document.documentElement;
+    const next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem('theme', next); } catch (_) { /* ignore */ }
   });
 </script>
 
@@ -74,6 +100,24 @@ const isActive = (href: string) => path === href || path.startsWith(href + '/');
   }
   .hdr__link:hover { color: var(--c-text); }
   .hdr__link.is-active { color: var(--c-accent); border-color: var(--c-accent); }
+
+  /* Bascule de thème */
+  .hdr__theme {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 36px; height: 36px;
+    margin-left: var(--sp-4);
+    background: none;
+    border: 1px solid var(--c-line);
+    border-radius: var(--radius);
+    color: var(--c-text-muted);
+    cursor: pointer;
+    transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+  }
+  .hdr__theme:hover { color: var(--c-accent); border-color: var(--c-accent); }
+  /* Affiche l'icône pertinente selon le thème courant */
+  .hdr__icon--sun { display: none; }
+  :root[data-theme="light"] .hdr__icon--moon { display: none; }
+  :root[data-theme="light"] .hdr__icon--sun { display: inline; }
 
   .hdr__burger {
     display: none;
