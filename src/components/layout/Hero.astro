@@ -6,8 +6,9 @@ interface Props {
   nbProjets: number;
   nbTermines: number;
   nbArticles: number;
+  nbCertifs: number;
 }
-const { nbProjets, nbTermines, nbArticles } = Astro.props;
+const { nbProjets, nbTermines, nbArticles, nbCertifs } = Astro.props;
 ---
 <section class="hero" aria-label="Introduction">
   <!-- Système de particules (data-viz) — porté de l'ancien site -->
@@ -32,7 +33,7 @@ const { nbProjets, nbTermines, nbArticles } = Astro.props;
       <Stat value={`${nbProjets}`} label="Projets" />
       <Stat value={`${nbTermines}`} label="Terminés" />
       <Stat value={`${nbArticles}`} label="Articles" />
-      <Stat value="14" label="Certifications" />
+      <Stat value={`${nbCertifs}`} label="Certifications" />
     </div>
   </div>
 </section>

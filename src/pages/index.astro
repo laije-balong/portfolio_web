@@ -9,6 +9,7 @@ const projets = await getCollection('projets');
 const articles = (await getCollection('articles'))
   .filter((a) => a.data.publie)
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const certifications = await getCollection('certifications');
 
 const featured = projets
   .filter((p) => p.data.featured)
@@ -17,9 +18,10 @@ const featured = projets
 const nbProjets = projets.length;
 const nbTermines = projets.filter((p) => p.data.statut === 'terminé').length;
 const nbArticles = articles.length;
+const nbCertifs = certifications.length;
 ---
 <Base>
-  <Hero nbProjets={nbProjets} nbTermines={nbTermines} nbArticles={nbArticles} />
+  <Hero nbProjets={nbProjets} nbTermines={nbTermines} nbArticles={nbArticles} nbCertifs={nbCertifs} />
 
   <!-- PROJETS PHARES -->
   {featured.length > 0 && (
