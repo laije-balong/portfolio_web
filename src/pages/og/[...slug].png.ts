@@ -19,6 +19,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
     { slug: 'certifications', data: { eyebrow: 'Certifications',  title: 'Certifications', subtitle: 'Preuves vérifiables sur Credly' } },
     { slug: 'parcours',       data: { eyebrow: 'Parcours',       title: 'Mon parcours',  subtitle: 'Trajectoire systèmes & business analysis' } },
     { slug: 'a-propos',       data: { eyebrow: 'À propos',       title: site.author,     subtitle: site.role } },
+    { slug: 'uses',           data: { eyebrow: 'Uses',           title: 'Mon atelier',   subtitle: 'Matériel, environnement et outils du quotidien' } },
     ...projets.map((p) => ({
       slug: `projets/${p.id}`,
       data: { eyebrow: 'Projet', title: p.data.titre, subtitle: p.data.resume } as OgData,

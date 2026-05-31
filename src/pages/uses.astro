@@ -1,0 +1,157 @@
+---
+import Base from '../layouts/Base.astro';
+
+/* Page /uses — l'atelier : matériel, environnement et outils du quotidien.
+   Convention de la communauté tech (uses.tech). Édite simplement les tableaux
+   ci-dessous ; le rendu se met à jour tout seul. Garde les libellés en français. */
+
+interface Item {
+  nom: string;
+  detail?: string;
+  /** Lien optionnel (site officiel, repo de config…). */
+  url?: string;
+}
+interface Groupe {
+  titre: string;
+  /** Couleur d'accent du groupe (token). Par défaut : accent cyan. */
+  couleur?: string;
+  intro?: string;
+  items: Item[];
+}
+
+// ✏️ Personnalise librement ces sections (ce sont des exemples cohérents avec ton profil).
+const groupes: Groupe[] = [
+  {
+    titre: 'Poste de travail',
+    couleur: 'var(--c-systemes)',
+    intro: 'La machine sur laquelle tout se construit.',
+    items: [
+      { nom: 'Ordinateur', detail: '✏️ ex. ThinkPad / PC sur-mesure — CPU, RAM, stockage' },
+      { nom: 'Écran(s)', detail: '✏️ ex. 27" 1440p + écran secondaire' },
+      { nom: 'Clavier / souris', detail: '✏️ ex. clavier mécanique, disposition AZERTY' },
+      { nom: 'Audio', detail: '✏️ casque pour la concentration' },
+    ],
+  },
+  {
+    titre: 'Système & terminal',
+    couleur: 'var(--c-systemes)',
+    intro: 'Là où je passe le plus clair de mon temps.',
+    items: [
+      { nom: 'OS', detail: '✏️ ex. Linux (Ubuntu/Arch) + WSL2 sous Windows' },
+      { nom: 'Shell', detail: '✏️ ex. bash / zsh', },
+      { nom: 'Terminal', detail: '✏️ ex. Windows Terminal, Alacritty' },
+      { nom: 'Multiplexeur', detail: '✏️ ex. tmux' },
+    ],
+  },
+  {
+    titre: 'Développement',
+    intro: 'Éditeur, langages et outils de build.',
+    items: [
+      { nom: 'Éditeur', detail: '✏️ ex. VS Code / Neovim' },
+      { nom: 'Langages', detail: '✏️ ex. C, Python, JavaScript/TypeScript, SQL' },
+      { nom: 'Versioning', detail: 'Git + GitHub', url: 'https://github.com/' },
+      { nom: 'Conteneurs', detail: '✏️ ex. Docker' },
+    ],
+  },
+  {
+    titre: 'Business Analysis',
+    couleur: 'var(--c-business)',
+    intro: 'Pour relier la technique au besoin métier.',
+    items: [
+      { nom: 'Modélisation', detail: '✏️ ex. BPMN (bpmn.io / Camunda Modeler)' },
+      { nom: 'Data & BI', detail: '✏️ ex. Power BI, Excel, SQL' },
+      { nom: 'Documentation', detail: '✏️ ex. BRD, specs, diagrammes' },
+      { nom: 'Gestion', detail: '✏️ ex. Notion, Trello, Jira' },
+    ],
+  },
+  {
+    titre: 'Ce site',
+    intro: 'Le portfolio que tu consultes est lui aussi un projet.',
+    items: [
+      { nom: 'Framework', detail: 'Astro (statique)', url: 'https://astro.build/' },
+      { nom: 'CMS', detail: 'Keystatic (Git as CMS, local)', url: 'https://keystatic.com/' },
+      { nom: 'Hébergement', detail: 'Netlify (déploiement continu)', url: 'https://www.netlify.com/' },
+      { nom: 'Polices', detail: 'Syne · DM Sans · JetBrains Mono (self-hosted)' },
+    ],
+  },
+];
+---
+<Base
+  title="Uses — GnoLab"
+  description="L'atelier : le matériel, l'environnement de développement et les outils que j'utilise au quotidien, côté systèmes comme côté business analysis."
+>
+  <section class="section">
+    <div class="container">
+      <p class="eyebrow">Uses</p>
+      <h1 class="ttl">Mon atelier</h1>
+      <p class="lead text-muted">
+        Le matériel, l'environnement et les outils avec lesquels je travaille —
+        des entrailles du système jusqu'à la modélisation métier.
+      </p>
+
+      <div class="uses">
+        {groupes.map((g) => (
+          <section class="ucard" style={`--dom:${g.couleur ?? 'var(--c-accent)'}`}>
+            <h2 class="ucard__t">{g.titre}</h2>
+            {g.intro && <p class="ucard__intro text-muted">{g.intro}</p>}
+            <ul class="ucard__list">
+              {g.items.map((it) => (
+                <li class="ucard__item">
+                  <span class="ucard__nom">
+                    {it.url ? (
+                      <a href={it.url} target="_blank" rel="noopener">{it.nom}</a>
+                    ) : it.nom}
+                  </span>
+                  {it.detail && <span class="ucard__detail text-muted">{it.detail}</span>}
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))}
+      </div>
+
+      <p class="uses__note text-muted mono">
+        Inspiré de <a href="https://uses.tech/" target="_blank" rel="noopener">uses.tech</a>.
+      </p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .ttl { font-size: var(--fs-3xl); }
+  .lead { margin-top: var(--sp-3); max-width: 60ch; }
+
+  .uses {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--sp-5);
+    margin-top: var(--sp-10);
+  }
+  .ucard {
+    background: var(--c-surface-1);
+    border: 1px solid var(--c-line);
+    border-top: 3px solid var(--dom);
+    border-radius: var(--radius-lg);
+    padding: var(--sp-5) var(--sp-6);
+  }
+  .ucard__t { font-size: var(--fs-lg); color: var(--dom); }
+  .ucard__intro { margin-top: var(--sp-2); font-size: var(--fs-sm); }
+
+  .ucard__list { list-style: none; padding: 0; margin-top: var(--sp-4); display: grid; gap: var(--sp-3); }
+  .ucard__item {
+    display: grid; gap: 2px;
+    padding-bottom: var(--sp-3);
+    border-bottom: 1px solid var(--c-line);
+  }
+  .ucard__item:last-child { border-bottom: none; padding-bottom: 0; }
+  .ucard__nom { font-family: var(--font-mono); font-size: var(--fs-sm); color: var(--c-text); }
+  .ucard__nom a { color: var(--c-text); transition: color var(--dur) var(--ease); }
+  .ucard__nom a:hover { color: var(--c-accent); }
+  .ucard__detail { font-size: var(--fs-sm); }
+
+  .uses__note {
+    margin-top: var(--sp-10); font-size: var(--fs-xs);
+    text-transform: uppercase; letter-spacing: 0.08em;
+  }
+  .uses__note a { color: var(--c-accent); }
+</style>
