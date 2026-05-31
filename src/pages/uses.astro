@@ -19,49 +19,48 @@ interface Groupe {
   items: Item[];
 }
 
-// ✏️ Personnalise librement ces sections (ce sont des exemples cohérents avec ton profil).
+// Données réelles. Les champs marqués ✏️ restent à préciser (modèle/specs exacts).
 const groupes: Groupe[] = [
   {
     titre: 'Poste de travail',
     couleur: 'var(--c-systemes)',
-    intro: 'La machine sur laquelle tout se construit.',
+    intro: 'La machine sur laquelle tout se construit — un portable comme atelier mobile.',
     items: [
-      { nom: 'Ordinateur', detail: '✏️ ex. ThinkPad / PC sur-mesure — CPU, RAM, stockage' },
-      { nom: 'Écran(s)', detail: '✏️ ex. 27" 1440p + écran secondaire' },
-      { nom: 'Clavier / souris', detail: '✏️ ex. clavier mécanique, disposition AZERTY' },
-      { nom: 'Audio', detail: '✏️ casque pour la concentration' },
+      { nom: 'Ordinateur', detail: 'PC portable ✏️ (préciser modèle — CPU, RAM, stockage)' },
+      { nom: 'Système hôte', detail: 'Windows 11' },
+      { nom: 'Couche Linux', detail: 'WSL2 — Ubuntu' },
     ],
   },
   {
     titre: 'Système & terminal',
     couleur: 'var(--c-systemes)',
-    intro: 'Là où je passe le plus clair de mon temps.',
+    intro: 'Là où je passe le plus clair de mon temps, surtout côté systèmes & architecture.',
     items: [
-      { nom: 'OS', detail: '✏️ ex. Linux (Ubuntu/Arch) + WSL2 sous Windows' },
-      { nom: 'Shell', detail: '✏️ ex. bash / zsh', },
-      { nom: 'Terminal', detail: '✏️ ex. Windows Terminal, Alacritty' },
-      { nom: 'Multiplexeur', detail: '✏️ ex. tmux' },
+      { nom: 'OS', detail: 'WSL2 (Ubuntu) sous Windows 11' },
+      { nom: 'Shell', detail: 'bash' },
+      { nom: 'Terminal', detail: 'Windows Terminal' },
+      { nom: 'Éditeur système', detail: 'Vim / Neovim — pour le bas-niveau et l’architecture', url: 'https://neovim.io/' },
     ],
   },
   {
     titre: 'Développement',
-    intro: 'Éditeur, langages et outils de build.',
+    intro: 'Éditeur, langages et outils du quotidien.',
     items: [
-      { nom: 'Éditeur', detail: '✏️ ex. VS Code / Neovim' },
-      { nom: 'Langages', detail: '✏️ ex. C, Python, JavaScript/TypeScript, SQL' },
+      { nom: 'Éditeur principal', detail: 'Visual Studio Code', url: 'https://code.visualstudio.com/' },
+      { nom: 'Éditeur terminal', detail: 'Neovim (focus systèmes)', url: 'https://neovim.io/' },
+      { nom: 'Langages', detail: 'C / C++, Python' },
       { nom: 'Versioning', detail: 'Git + GitHub', url: 'https://github.com/' },
-      { nom: 'Conteneurs', detail: '✏️ ex. Docker' },
     ],
   },
   {
-    titre: 'Business Analysis',
+    titre: 'Data & Business Analysis',
     couleur: 'var(--c-business)',
-    intro: 'Pour relier la technique au besoin métier.',
+    intro: 'Pour relier la technique au besoin métier et faire parler les données.',
     items: [
-      { nom: 'Modélisation', detail: '✏️ ex. BPMN (bpmn.io / Camunda Modeler)' },
-      { nom: 'Data & BI', detail: '✏️ ex. Power BI, Excel, SQL' },
-      { nom: 'Documentation', detail: '✏️ ex. BRD, specs, diagrammes' },
-      { nom: 'Gestion', detail: '✏️ ex. Notion, Trello, Jira' },
+      { nom: 'Bases de données', detail: 'SQL' },
+      { nom: 'Business Intelligence', detail: 'Power BI', url: 'https://powerbi.microsoft.com/' },
+      { nom: 'Tableur', detail: 'Excel' },
+      { nom: 'Modélisation', detail: 'BPMN ✏️ (préciser l’outil — bpmn.io, Camunda…)' },
     ],
   },
   {
