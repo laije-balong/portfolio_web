@@ -13,6 +13,9 @@ export default defineConfig({
   // à la demande (prerender:false) → l'adapter node permet au build de passer.
   output: 'static',
   adapter: node({ mode: 'standalone' }),
+  // Précharge les pages liées dès qu'un lien entre dans le viewport →
+  // navigation interne quasi instantanée, sans coût au premier rendu.
+  prefetch: { prefetchAll: true, defaultStrategy: 'viewport' },
   integrations: [
     react(),
     markdoc(),
