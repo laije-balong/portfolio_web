@@ -1,0 +1,12 @@
+# Config de déploiement Netlify
+# Le site est statique (output: 'static'), mais l'adapter @astrojs/node
+# (présent uniquement pour que les routes Keystatic passent au build) fait
+# qu'Astro sépare la sortie : le HTML statique va dans dist/client/.
+# C'est ce dossier qu'il faut publier (sinon Netlify ne trouve pas index.html).
+
+[build]
+  command = "npm run build"
+  publish = "dist/client"
+
+[build.environment]
+  NODE_VERSION = "22.12.0"

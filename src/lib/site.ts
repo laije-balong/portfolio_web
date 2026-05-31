@@ -7,7 +7,7 @@
 
 export const site = {
   /** Domaine de production (sert aux URLs absolues OG). */
-  url: 'https://gnolab.dev',
+  url: 'https://gnolab-portfolio.netlify.app/',
   /** Nom de marque court. */
   brand: 'GnoLab',
   /** Identité affichée. */
@@ -43,8 +43,8 @@ export const contactFormEnabled = contactForm.web3formsKey.length > 0;
 export const contact = {
   email: {
     show: true,
-    label: 'agmc.informatique@gmail.com', // À VÉRIFIER (email à exposer publiquement)
-    href: 'mailto:agmc.informatique@gmail.com',
+    label: 'laijebalong@gmail.com', // À VÉRIFIER (email à exposer publiquement)
+    href: 'mailto:laijebalong@gmail.com',
   },
   linkedin: {
     show: true,
