@@ -1,4 +1,16 @@
 ---
+// Polices self-hosted (sous-ensemble latin, graisses réellement utilisées) :
+// Vite les bundle/hash en local → plus de requête bloquante vers Google Fonts,
+// ni de connexion tierce (fonts.googleapis.com / fonts.gstatic.com).
+import '@fontsource/syne/latin-700.css';
+import '@fontsource/syne/latin-800.css';
+import '@fontsource/dm-sans/latin-400.css';
+import '@fontsource/dm-sans/latin-500.css';
+import '@fontsource/jetbrains-mono/latin-400.css';
+import '@fontsource/jetbrains-mono/latin-500.css';
+// URLs hashées des 2 woff2 critiques (préchargés dans le <head>).
+import dmSans400 from '@fontsource/dm-sans/files/dm-sans-latin-400-normal.woff2';
+import syne800 from '@fontsource/syne/files/syne-latin-800-normal.woff2';
 import '../styles/tokens.css';
 import '../styles/base.css';
 import '../styles/particles.css';
@@ -49,12 +61,22 @@ const ogImageUrl = new URL(ogImage ?? `/og/${ogSlug}.png`, base).toString();
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageUrl} />
 
-    <!-- Polices : chargées en async pour éviter le FOIT -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Polices self-hosted (importées plus haut, voir frontmatter).
+         Préchargement des 2 graisses critiques au rendu initial (corps + titres)
+         pour réduire le décalage de texte (CLS) au premier affichage. -->
     <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href={dmSans400}
+      crossorigin
+    />
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href={syne800}
+      crossorigin
     />
   </head>
   <body>
