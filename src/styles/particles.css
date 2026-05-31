@@ -47,6 +47,16 @@
   vector-effect: non-scaling-stroke;
 }
 
+/* ── MemoryBlocks (systèmes) ── */
+.particle--memoryBlocks .mb-cell {
+  transition: fill-opacity 220ms ease;
+}
+
+/* ── PacketFlow (systèmes) ── */
+.particle--packetFlow line {
+  vector-effect: non-scaling-stroke;
+}
+
 /* ── Phase transition visual effect ──
    When phase changes, dim then restore
    (JS applies class 'phase-transitioning' to SVG)
@@ -65,6 +75,8 @@
 .particle--trendLine,
 .particle--donutChart,
 .particle--radarChart,
-.particle--nucleusCluster {
+.particle--nucleusCluster,
+.particle--memoryBlocks,
+.particle--packetFlow {
   contain: layout style;
 }

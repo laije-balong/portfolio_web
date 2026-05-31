@@ -8,8 +8,16 @@ import { TrendLine }     from './TrendLine.js';
 import { DonutChart }    from './DonutChart.js';
 import { RadarChart }    from './RadarChart.js';
 import { NucleusCluster } from './NucleusCluster.js';
+import { MemoryBlocks }  from './MemoryBlocks.js';
+import { PacketFlow }    from './PacketFlow.js';
 
-const GRAPH_TYPES = ['dataBars', 'trendLine', 'donutChart', 'radarChart', 'nucleusCluster'];
+// Formes data/BA : dataBars, trendLine, donutChart, radarChart.
+// Formes systèmes : nucleusCluster, memoryBlocks, packetFlow.
+// → équilibre Business Analysis / Systèmes, fidèle au positionnement double.
+const GRAPH_TYPES = [
+  'dataBars', 'trendLine', 'donutChart', 'radarChart',
+  'nucleusCluster', 'memoryBlocks', 'packetFlow',
+];
 const NS = 'http://www.w3.org/2000/svg';
 
 /**
@@ -79,6 +87,8 @@ export class Particle {
       case 'donutChart':     return DonutChart(this._group, this.id);
       case 'radarChart':     return RadarChart(this._group, this.id);
       case 'nucleusCluster': return NucleusCluster(this._group, this.id);
+      case 'memoryBlocks':   return MemoryBlocks(this._group, this.id);
+      case 'packetFlow':     return PacketFlow(this._group, this.id);
       default:               return DataBars(this._group, this.id);
     }
   }
