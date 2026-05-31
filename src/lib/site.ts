@@ -1,5 +1,5 @@
 /* ============================================================================
-   Configuration centrale du site — SOURCE UNIQUE pour l'identité, le contact
+   Configuration centrale du site SOURCE UNIQUE pour l'identité, le contact
    et les liens sociaux. Édite UNIQUEMENT ce fichier pour mettre à jour ces infos
    partout (page /a-propos, footer, meta Open Graph…).
    ⚠️ Les valeurs marquées « À VÉRIFIER » sont des suppositions : confirme-les.

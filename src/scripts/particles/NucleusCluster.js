@@ -1,5 +1,5 @@
 /* ============================================================
-   NucleusCluster — Core + orbiting satellites + synaptic connections
+   NucleusCluster Core + orbiting satellites + synaptic connections
    Specs: 4 fixed satellites (triangle, square, rectangle, diamond),
           connections every 800–1500ms with 600ms lifetime
    ============================================================ */

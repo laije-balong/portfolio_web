@@ -19,14 +19,14 @@ interface Groupe {
   items: Item[];
 }
 
-// Données réelles. Les champs marqués ✏️ restent à préciser (modèle/specs exacts).
+// Données réelles. Les champs marqués restent à préciser (modèle/specs exacts).
 const groupes: Groupe[] = [
   {
     titre: 'Poste de travail',
     couleur: 'var(--c-systemes)',
-    intro: 'La machine sur laquelle tout se construit — un portable comme atelier mobile.',
+    intro: 'La machine sur laquelle tout se construit un portable comme atelier mobile.',
     items: [
-      { nom: 'Ordinateur', detail: 'PC portable ✏️ (préciser modèle — CPU, RAM, stockage)' },
+      { nom: 'Ordinateur', detail: 'PC portable' },
       { nom: 'Système hôte', detail: 'Windows 11' },
       { nom: 'Couche Linux', detail: 'WSL2 — Ubuntu' },
     ],
@@ -39,7 +39,7 @@ const groupes: Groupe[] = [
       { nom: 'OS', detail: 'WSL2 (Ubuntu) sous Windows 11' },
       { nom: 'Shell', detail: 'bash' },
       { nom: 'Terminal', detail: 'Windows Terminal' },
-      { nom: 'Éditeur système', detail: 'Vim / Neovim — pour le bas-niveau et l’architecture', url: 'https://neovim.io/' },
+      { nom: 'Éditeur système', detail: 'Vim / Neovim pour le bas-niveau et l’architecture', url: 'https://neovim.io/' },
     ],
   },
   {
@@ -60,7 +60,7 @@ const groupes: Groupe[] = [
       { nom: 'Bases de données', detail: 'SQL' },
       { nom: 'Business Intelligence', detail: 'Power BI', url: 'https://powerbi.microsoft.com/' },
       { nom: 'Tableur', detail: 'Excel' },
-      { nom: 'Modélisation', detail: 'BPMN ✏️ (préciser l’outil — bpmn.io, Camunda…)' },
+      { nom: 'Modélisation', detail: 'BPMN (bpmn.io)' },
     ],
   },
   {
@@ -84,7 +84,7 @@ const groupes: Groupe[] = [
       <p class="eyebrow">Uses</p>
       <h1 class="ttl">Mon atelier</h1>
       <p class="lead text-muted">
-        Le matériel, l'environnement et les outils avec lesquels je travaille —
+        Le matériel, l'environnement et les outils avec lesquels je travaille
         des entrailles du système jusqu'à la modélisation métier.
       </p>
 

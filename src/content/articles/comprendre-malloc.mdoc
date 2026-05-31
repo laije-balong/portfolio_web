@@ -1,5 +1,5 @@
 ---
-titre: "Comment j'ai réimplémenté malloc — et ce que ça m'a appris sur la mémoire"
+titre: "Comment j'ai réimplémenté malloc et ce que ça m'a appris sur la mémoire"
 resume: "Post-mortem de mon allocateur mémoire en C : first-fit, coalescence, fragmentation, et pourquoi la glibc fait ce qu'elle fait."
 date: 2026-05-12
 tags: ["C", "mémoire", "systèmes"]
@@ -34,6 +34,6 @@ rapide, mais elle fragmente.
 
 ## La leçon
 
-La coalescence — fusionner les blocs libres adjacents au moment du `free` — a réduit
+La coalescence fusionner les blocs libres adjacents au moment du `free`  a réduit
 ma fragmentation de **38 %** sur mon benchmark. C'est exactement pour ça que les vrais
 allocateurs sont complexes.

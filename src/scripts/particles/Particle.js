@@ -1,5 +1,5 @@
 /* ============================================================
-   Particle — Individual particle with SVG group + visual component
+   Particle Individual particle with SVG group + visual component
    ============================================================ */
 
 import { random, isInViewport, uid } from '../utils/math.js';

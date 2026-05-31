@@ -1,5 +1,5 @@
 /* ============================================================
-   ParticleSystem — Manager + RAF loop
+   ParticleSystem Manager + RAF loop
    Specs: maxParticles 45 desktop / 25 mobile
           chaos→analysis at 3000ms, analysis→clarity at 8000ms
    ============================================================ */

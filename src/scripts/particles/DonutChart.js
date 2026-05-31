@@ -1,5 +1,5 @@
 /* ============================================================
-   DonutChart — Morphing segmented donut with independent rotation
+   DonutChart Morphing segmented donut with independent rotation
    Specs: 3–5 segments, 4000ms morph cycle, sinusoidal easing
    ============================================================ */
 

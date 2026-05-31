@@ -67,7 +67,7 @@ const certifications = defineCollection({
     niveau: z.string().nullish().transform((v) => v || undefined),
     // Plusieurs preuves possibles (source au choix). Voir aussi credlyUrl (legacy).
     preuves: z.array(preuve).default([]),
-    // ⚠️ Ancien champ — gardé pour compatibilité. Préférer `preuves`.
+    // ⚠️ Ancien champ gardé pour compatibilité. Préférer `preuves`.
     credlyUrl: z.string().nullish().transform((v) => v || undefined),
     badge: z.string().nullish().transform((v) => v || undefined),
     // Fichier du certificat (PDF/image) téléversé dans le dépôt (public/).

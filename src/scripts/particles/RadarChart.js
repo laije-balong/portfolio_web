@@ -1,5 +1,5 @@
 /* ============================================================
-   RadarChart — 5-axis pulsating radar with concentric level rings
+   RadarChart 5-axis pulsating radar with concentric level rings
    Specs: numAxes=5, maxRadius=[40,60], per-axis frequency & phase
    ============================================================ */
 
