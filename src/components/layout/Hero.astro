@@ -1,6 +1,7 @@
 ---
 import Button from '../ui/Button.astro';
 import Stat from '../ui/Stat.astro';
+import { cv, cvEnabled } from '../../lib/site';
 
 interface Props {
   nbProjets: number;
@@ -28,6 +29,11 @@ const { nbProjets, nbTermines, nbArticles, nbCertifs } = Astro.props;
     <div class="hero__cta">
       <Button href="/projets">Voir les projets</Button>
       <Button href="/parcours" variant="ghost">Mon parcours →</Button>
+      {cvEnabled && (
+        <Button href={cv.path} variant="ghost" download={cv.filename}>
+          Télécharger le CV ↓
+        </Button>
+      )}
     </div>
     <div class="hero__stats">
       <Stat value={`${nbProjets}`} label="Projets" />

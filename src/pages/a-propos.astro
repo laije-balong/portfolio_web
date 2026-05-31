@@ -1,6 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
-import { site, contactList, contactForm, contactFormEnabled } from '../lib/site';
+import { site, contactList, contactForm, contactFormEnabled, cv, cvEnabled } from '../lib/site';
 
 // Initiales pour l'avatar de repli (si pas de photo dans public/avatar.jpg)
 const initiales = site.author.split(' ').map((m) => m[0]).slice(0, 2).join('');
@@ -74,6 +74,12 @@ const piliers = [
       <div class="contact" id="contact">
         <h2 class="contact__t">Me contacter</h2>
         <p class="text-muted">Ouvert aux opportunités, collaborations et échanges techniques.</p>
+
+        {cvEnabled && (
+          <a class="cv-dl mono" href={cv.path} download={cv.filename}>
+            <span aria-hidden="true">↓</span> Télécharger mon CV (PDF)
+          </a>
+        )}
 
         {contactFormEnabled && (
           <form class="cform" id="contactForm" action="https://api.web3forms.com/submit" method="POST">
@@ -195,6 +201,14 @@ const piliers = [
   /* Contact */
   .contact { margin-top: var(--sp-10); padding-top: var(--sp-8); border-top: 1px solid var(--c-line); }
   .contact__t { font-size: var(--fs-2xl); }
+  .cv-dl {
+    display: inline-flex; align-items: center; gap: var(--sp-2);
+    margin-top: var(--sp-4); padding: var(--sp-3) var(--sp-5);
+    background: var(--c-accent); color: var(--c-bg);
+    border-radius: var(--radius); font-weight: var(--fw-medium);
+    transition: background var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+  }
+  .cv-dl:hover { background: var(--c-accent-strong); box-shadow: var(--glow-accent); }
   .contact__list { list-style: none; padding: 0; margin-top: var(--sp-5); display: grid; gap: var(--sp-2); max-width: 480px; }
   .contact__link {
     display: flex; align-items: center; justify-content: space-between;

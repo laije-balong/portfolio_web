@@ -7,10 +7,18 @@ interface Props {
   variant?: 'primary' | 'ghost';
   size?: 'sm' | 'md';
   class?: string;
+  /** Nom de fichier pour forcer le téléchargement (rend l'attribut download). */
+  download?: string;
 }
-const { href = '#', variant = 'primary', size = 'md', class: cls = '' } = Astro.props;
+const {
+  href = '#',
+  variant = 'primary',
+  size = 'md',
+  class: cls = '',
+  download,
+} = Astro.props;
 ---
-<a href={href} class={`btn btn--${variant} btn--${size} ${cls}`}>
+<a href={href} class={`btn btn--${variant} btn--${size} ${cls}`} download={download}>
   <slot />
 </a>
 

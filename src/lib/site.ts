@@ -26,6 +26,17 @@ export const site = {
   ogImage: '/og/index.png',
 };
 
+/** CV téléchargeable. Dépose ton fichier dans `public/` (ex. public/cv.pdf)
+    puis renseigne son chemin ci-dessous. Tant que `path` est vide, le bouton
+    « Télécharger le CV » reste masqué (pas de lien 404). */
+export const cv = {
+  path: '', // ex. '/cv.pdf' (fichier placé dans public/cv.pdf)
+  filename: 'CV-BALONG-Laije-Belthassar.pdf', // nom du fichier téléchargé
+};
+
+/** Vrai si un CV est configuré (→ on affiche le bouton de téléchargement). */
+export const cvEnabled = cv.path.length > 0;
+
 /** Formulaire de contact (page /a-propos). Site statique → on passe par un
     service externe gratuit : Web3Forms (https://web3forms.com).
     1) Crée une « Access Key » gratuite (juste un email à confirmer).
