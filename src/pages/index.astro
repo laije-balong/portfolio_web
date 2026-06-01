@@ -20,7 +20,10 @@ const nbTermines = projets.filter((p) => p.data.statut === 'terminé').length;
 const nbArticles = articles.length;
 const nbCertifs = certifications.length;
 ---
-<Base>
+<Base
+  title="BALONG Laije Belthassar — Ingénieur Systèmes & Business Analyst | GnoLab"
+  description="Portfolio de BALONG Laije Belthassar (GnoLab) : ingénierie systèmes et business analysis. Projets, parcours et publications techniques depuis Brazzaville."
+>
   <Hero nbProjets={nbProjets} nbTermines={nbTermines} nbArticles={nbArticles} nbCertifs={nbCertifs} />
 
   <!-- PROJETS PHARES -->

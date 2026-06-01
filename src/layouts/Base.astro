@@ -16,6 +16,7 @@ import '../styles/base.css';
 import '../styles/particles.css';
 import Header from '../components/layout/Header.astro';
 import Footer from '../components/layout/Footer.astro';
+import { site, contactList, analytics, analyticsEnabled, verification } from '../lib/site';
 
 interface Props {
   title?: string;
@@ -34,6 +35,25 @@ const canonical = new URL(Astro.url.pathname, base).toString();
 // chemin courant, sauf si un `ogImage` explicite est fourni en prop.
 const ogSlug = Astro.url.pathname.replace(/^\/+|\/+$/g, '') || 'index';
 const ogImageUrl = new URL(ogImage ?? `/og/${ogSlug}.png`, base).toString();
+
+// Données structurées schema.org/Person — uniquement sur l'accueil (page
+// « identité »). Aide Google et les IA à identifier l'entité « BALONG Laije
+// Belthassar » et à relier le site à ses profils (sameAs). Les liens de contact
+// (LinkedIn, GitHub, Credly) viennent de lib/site.ts.
+const isHome = Astro.url.pathname === '/';
+const personLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: site.author,
+  jobTitle: site.role,
+  url: site.url,
+  image: new URL('/og/index.png', base).toString(),
+  description: site.description,
+  address: { '@type': 'PostalAddress', addressLocality: site.location },
+  sameAs: contactList
+    .filter((c) => c.href.startsWith('http'))
+    .map((c) => c.href),
+};
 ---
 <!doctype html>
 <html lang="fr" data-theme="dark">
@@ -54,11 +74,22 @@ const ogImageUrl = new URL(ogImage ?? `/og/${ogSlug}.png`, base).toString();
     </script>
     <title>{title}</title>
     <meta name="description" content={description} />
+    <meta name="author" content={site.author} />
+    {verification.google && <meta name="google-site-verification" content={verification.google} />}
+    {verification.bing && <meta name="msvalidate.01" content={verification.bing} />}
     <meta name="theme-color" content="#020a14" />
     <link rel="canonical" href={canonical} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <!-- Autodécouverte du flux RSS du blog -->
     <link rel="alternate" type="application/rss+xml" title="GnoLab — Blog" href="/rss.xml" />
+    {isHome && (
+      <script type="application/ld+json" set:html={JSON.stringify(personLd)} />
+    )}
+    <!-- Analytics Umami : sans cookie, chargé en defer (non bloquant).
+         is:inline → Astro n'essaie pas de le bundler (c'est un tag tiers). -->
+    {analyticsEnabled && (
+      <script is:inline defer src={analytics.src} data-website-id={analytics.websiteId}></script>
+    )}
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />

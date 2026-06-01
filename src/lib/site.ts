@@ -37,6 +37,27 @@ export const cv = {
 /** Vrai si un CV est configuré (→ on affiche le bouton de téléchargement). */
 export const cvEnabled = cv.path.length > 0;
 
+/** Analytics Umami (cloud, gratuit, sans cookie, RGPD-friendly). Le script ne
+    se charge que si `websiteId` est renseigné. Ne consomme aucun crédit Netlify
+    (requête vers un service tiers, pas un build). Laisse vide pour désactiver. */
+export const analytics = {
+  websiteId: 'd23a4e0b-fabd-4a1a-beff-d2483247ef61',
+  src: 'https://cloud.umami.is/script.js',
+};
+
+/** Vrai si l'analytics est configuré (→ on injecte le script). */
+export const analyticsEnabled = analytics.websiteId.length > 0;
+
+/** Codes de validation de propriété pour les moteurs de recherche.
+    Colle UNIQUEMENT la valeur `content` de la balise meta fournie par chaque
+    service (pas toute la balise). Une valeur vide = aucune balise injectée.
+    - Google Search Console → search.google.com/search-console (Préfixe d'URL)
+    - Bing Webmaster Tools  → bing.com/webmasters */
+export const verification = {
+  google: 'RJfoyv0szop0UpASluvaJKpSaZUX5uGEYsa0AE7icAE', // Search Console (préfixe d'URL)
+  bing: '',   // <meta name="msvalidate.01" content="ICI">
+};
+
 /** Formulaire de contact (page /a-propos). Site statique → on passe par un
     service externe gratuit : Web3Forms (https://web3forms.com).
     1) Crée une « Access Key » gratuite (juste un email à confirmer).
@@ -60,7 +81,7 @@ export const contact = {
   linkedin: {
     show: true,
     label: 'LinkedIn',
-    href: 'www.linkedin.com/in/laije-belthassar-balong',
+    href: 'https://www.linkedin.com/in/laije-belthassar-balong',
   },
   github: {
     show: true,

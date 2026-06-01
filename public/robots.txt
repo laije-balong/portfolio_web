@@ -1,0 +1,10 @@
+# Autorise tous les robots à explorer tout le site public.
+User-agent: *
+Allow: /
+
+# L'admin Keystatic n'est pas déployé (bloqué en 404 par netlify.toml),
+# mais on le déclare ici par clarté.
+Disallow: /keystatic
+
+# Sitemap (généré au build par @astrojs/sitemap).
+Sitemap: https://gnolab-portfolio.netlify.app/sitemap-index.xml
