@@ -1,7 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
-import { PISTES, type Piste } from '../lib/taxonomy';
+import { PISTES, DOMAINES, type Piste, type Domaine } from '../lib/taxonomy';
 
 // Timeline éditable : jalons de la collection « parcours » (src/content/jalons/),
 // triés chronologiquement (du plus ancien au plus récent). Géré via /keystatic.
@@ -9,6 +9,14 @@ const jalons = (await getCollection('jalons')).sort((a, b) => {
   const d = a.data.date.valueOf() - b.data.date.valueOf();
   return d !== 0 ? d : a.data.ordre - b.data.ordre;
 });
+
+// Index des projets par slug, pour résoudre les projets liés à un jalon.
+// Un slug orphelin (projet supprimé) est simplement ignoré.
+const projets = await getCollection('projets');
+const projetsParSlug = new Map(projets.map((p) => [p.id, p]));
+const projetsLies = (slugs: string[] = []) =>
+  slugs.map((s) => projetsParSlug.get(s)).filter((p) => p != null);
+
 const fmt = (d: Date) => new Intl.DateTimeFormat('fr-FR', { month: 'short', year: 'numeric' }).format(d);
 ---
 <Base title="Parcours — GnoLab" description="Trajectoire d'ingénierie systèmes et de business analysis, jalon par jalon.">
@@ -37,6 +45,27 @@ const fmt = (d: Date) => new Intl.DateTimeFormat('fr-FR', { month: 'short', year
                   </span>
                   <h2 class="timeline__title">{j.data.titre}</h2>
                   <p class="timeline__resume">{j.data.resume}</p>
+                  {projetsLies(j.data.projets).length > 0 && (
+                    <div class="timeline__projets">
+                      <span class="timeline__projets-label mono">Projets liés</span>
+                      <ul class="timeline__projets-list">
+                        {projetsLies(j.data.projets).map((p) => {
+                          const dom = DOMAINES[p.data.domaine as Domaine];
+                          return (
+                            <li>
+                              <a
+                                class="timeline__projet mono"
+                                href={`/projets/${p.id}`}
+                                style={`--pdom:${dom?.color ?? 'var(--c-accent)'}`}
+                              >
+                                {p.data.titre}
+                              </a>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </div>
+                  )}
                 </div>
               </li>
             );
@@ -83,6 +112,27 @@ const fmt = (d: Date) => new Intl.DateTimeFormat('fr-FR', { month: 'short', year
   .timeline__title { display: block; font-family: var(--font-display); font-weight: var(--fw-bold); font-size: var(--fs-md); color: var(--c-text); margin-top: var(--sp-1); }
   .timeline__title:hover { color: var(--c-accent); }
   .timeline__resume { color: var(--c-text-muted); font-size: var(--fs-sm); margin-top: var(--sp-2); }
+
+  /* Projets liés au jalon : puces cliquables compactes, couleur = domaine */
+  .timeline__projets { margin-top: var(--sp-3); }
+  .timeline__projets-label {
+    display: block; font-size: var(--fs-xs); color: var(--c-text-faint);
+    text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: var(--sp-2);
+  }
+  .timeline__projets-list { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+  .timeline__projet {
+    display: inline-flex; align-items: center;
+    font-size: var(--fs-xs); color: var(--pdom);
+    padding: 0.25em 0.7em;
+    border: 1px solid color-mix(in srgb, var(--pdom) 35%, var(--c-line));
+    border-radius: var(--radius-pill);
+    background: color-mix(in srgb, var(--pdom) 8%, transparent);
+    transition: border-color var(--dur) var(--ease), background var(--dur) var(--ease);
+  }
+  .timeline__projet:hover {
+    border-color: var(--pdom);
+    background: color-mix(in srgb, var(--pdom) 16%, transparent);
+  }
 
   @media (max-width: 640px) {
     .timeline::before { left: 5px; }

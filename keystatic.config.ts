@@ -191,6 +191,11 @@ export default config({
         phase: fields.text({ label: 'Phase (optionnel, ex. « M1–M6 »)' }),
         encours: fields.checkbox({ label: 'Jalon en cours', defaultValue: false }),
         ordre: fields.integer({ label: 'Ordre (si même date)', defaultValue: 0 }),
+        // Projets liés (0..N) — pointe vers la collection « projets ».
+        projets: fields.array(
+          fields.relationship({ label: 'Projet lié', collection: 'projets' }),
+          { label: 'Projets liés', itemLabel: (p) => p.value ?? '—' }
+        ),
         content: fields.markdoc({ label: 'Détails (optionnel)' }),
       },
     }),

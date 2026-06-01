@@ -89,6 +89,9 @@ const jalons = defineCollection({
     phase: z.string().nullish().transform((v) => v || undefined),
     encours: z.boolean().default(false),
     ordre: z.number().default(0),
+    // Projets liés (0..N) : slugs de la collection « projets ». Un slug
+    // orphelin est ignoré à l'affichage (tolérance, comme le reste du schéma).
+    projets: z.array(z.string()).default([]),
   }),
 });
 

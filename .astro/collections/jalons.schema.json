@@ -39,6 +39,13 @@
       "default": 0,
       "type": "number"
     },
+    "projets": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
     "$schema": {
       "type": "string"
     }
