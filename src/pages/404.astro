@@ -1,0 +1,74 @@
+---
+import Base from '../layouts/Base.astro';
+
+/* Page 404 — affichée pour toute URL inexistante (et pour /keystatic, bloqué
+   par netlify.toml). Ton « labo systèmes » : message technique, sobre, avec
+   les chemins de retour utiles. */
+
+const liens = [
+  { href: '/', label: 'Accueil' },
+  { href: '/projets', label: 'Projets' },
+  { href: '/parcours', label: 'Parcours' },
+  { href: '/blog', label: 'Blog' },
+];
+---
+<Base
+  title="404 — Page introuvable | GnoLab"
+  description="Cette page n'existe pas (ou plus). Retour vers le reste du portfolio."
+>
+  <section class="section nf">
+    <div class="container nf__inner">
+      <p class="eyebrow">Erreur 404</p>
+
+      <!-- Petit clin d'œil système : un faux retour de syscall. -->
+      <pre class="nf__code mono" aria-hidden="true">$ open("<span class="nf__path">/cette-page</span>")
+└─ <span class="nf__err">ENOENT</span> : No such file or directory</pre>
+
+      <h1 class="nf__title">Ressource introuvable.</h1>
+      <p class="nf__lead text-muted">
+        L'adresse demandée n'existe pas, ou n'existe plus. Le lien est peut-être
+        cassé, ou la page a été déplacée.
+      </p>
+
+      <nav class="nf__nav" aria-label="Retour vers le site">
+        {liens.map((l) => (
+          <a href={l.href} class="nf__link mono">{l.label}</a>
+        ))}
+      </nav>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .nf { min-height: calc(100vh - 64px - 200px); display: flex; align-items: center; }
+  .nf__inner { max-width: 640px; }
+
+  .nf__code {
+    margin-top: var(--sp-5);
+    padding: var(--sp-4) var(--sp-5);
+    background: var(--c-surface-1);
+    border: 1px solid var(--c-line);
+    border-left: 3px solid var(--c-accent);
+    border-radius: var(--radius);
+    font-size: var(--fs-sm);
+    color: var(--c-text-muted);
+    overflow-x: auto;
+    line-height: 1.6;
+  }
+  .nf__path { color: var(--c-text); }
+  .nf__err { color: var(--c-securite, #fb7185); font-weight: var(--fw-bold); }
+
+  .nf__title { font-size: var(--fs-3xl); margin-top: var(--sp-6); }
+  .nf__lead { margin-top: var(--sp-4); max-width: 52ch; }
+
+  .nf__nav { display: flex; flex-wrap: wrap; gap: var(--sp-3); margin-top: var(--sp-8); }
+  .nf__link {
+    font-size: var(--fs-sm);
+    padding: 0.6em 1.1em;
+    border: 1px solid var(--c-line-strong);
+    border-radius: var(--radius);
+    color: var(--c-text);
+    transition: border-color var(--dur) var(--ease), color var(--dur) var(--ease);
+  }
+  .nf__link:hover { border-color: var(--c-accent); color: var(--c-accent); }
+</style>

@@ -54,23 +54,23 @@ export const contactFormEnabled = contactForm.web3formsKey.length > 0;
 export const contact = {
   email: {
     show: true,
-    label: 'laijebalong@gmail.com', // À VÉRIFIER (email à exposer publiquement)
+    label: 'laijebalong@gmail.com',
     href: 'mailto:laijebalong@gmail.com',
   },
   linkedin: {
     show: true,
     label: 'LinkedIn',
-    href: 'https://www.linkedin.com/in/laije-belthassar-balong/', // À VÉRIFIER (URL réelle de ton profil)
+    href: 'www.linkedin.com/in/laije-belthassar-balong',
   },
   github: {
     show: true,
     label: 'GitHub',
-    href: 'https://github.com/laije-belthassar', // À VÉRIFIER
+    href: 'https://github.com/laije1', //
   },
   credly: {
     show: true,
     label: 'Credly',
-    href: 'https://credly.com/users/laije-belthassar', // À VÉRIFIER
+    href: 'https://www.credly.com/users/laije-belthassar',
   },
 };
 
