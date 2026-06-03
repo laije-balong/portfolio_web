@@ -1,9 +1,15 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
-import { preuveLabel, type PreuveSource } from '../lib/taxonomy';
+import { preuveLabel, DOMAINES, type PreuveSource, type Domaine } from '../lib/taxonomy';
 
 const certs = (await getCollection('certifications')).sort((a, b) => a.data.ordre - b.data.ordre);
+
+// Index des projets par slug, pour résoudre les projets liés à une certif.
+const projets = await getCollection('projets');
+const projetsParSlug = new Map(projets.map((p) => [p.id, p]));
+const projetsLies = (slugs: string[] = []) =>
+  slugs.map((s) => projetsParSlug.get(s)).filter((p) => p != null);
 // regroupement par domaine
 const parDomaine = certs.reduce((acc, c) => {
   (acc[c.data.domaine] ??= []).push(c);
@@ -36,7 +42,7 @@ const liensVerif = (c: (typeof certs)[number]): Lien[] => {
           <h2 class="cert-group__title mono">{domaine}</h2>
           <div class="grid">
             {list.map((c) => (
-              <div class="cert reveal">
+              <div class="cert reveal" id={c.id}>
                 {c.data.badge && (
                   <img class="cert__badge" src={c.data.badge} alt={`Badge ${c.data.nom}`} loading="lazy" width="64" height="64" />
                 )}
@@ -52,6 +58,23 @@ const liensVerif = (c: (typeof certs)[number]): Lien[] => {
                         {l.texte} →
                       </a>
                     ))}
+                  </div>
+                )}
+                {projetsLies(c.data.projets).length > 0 && (
+                  <div class="cert__projets">
+                    <span class="cert__projets-label mono">Projets associés</span>
+                    <ul class="cert__projets-list">
+                      {projetsLies(c.data.projets).map((p) => {
+                        const pdom = DOMAINES[p.data.domaine as Domaine];
+                        return (
+                          <li>
+                            <a class="cert__projet mono" href={`/projets/${p.id}`} style={`--pdom:${pdom?.color ?? 'var(--c-accent)'}`}>
+                              {p.data.titre}
+                            </a>
+                          </li>
+                        );
+                      })}
+                    </ul>
                   </div>
                 )}
               </div>
@@ -84,4 +107,22 @@ const liensVerif = (c: (typeof certs)[number]): Lien[] => {
   .cert__links { display: flex; flex-direction: column; gap: var(--sp-1); margin-top: var(--sp-3); }
   .cert__link { font-size: var(--fs-sm); color: var(--c-accent); }
   .cert__link:hover { text-decoration: underline; }
+
+  /* Projets associés à la certif : puces cliquables compactes, couleur = domaine */
+  .cert__projets { margin-top: var(--sp-4); padding-top: var(--sp-3); border-top: 1px solid var(--c-line); }
+  .cert__projets-label {
+    display: block; font-size: var(--fs-xs); color: var(--c-text-faint);
+    text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: var(--sp-2);
+  }
+  .cert__projets-list { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+  .cert__projet {
+    display: inline-flex; align-items: center;
+    font-size: var(--fs-xs); color: var(--pdom);
+    padding: 0.25em 0.7em;
+    border: 1px solid color-mix(in srgb, var(--pdom) 35%, var(--c-line));
+    border-radius: var(--radius-pill);
+    background: color-mix(in srgb, var(--pdom) 8%, transparent);
+    transition: border-color var(--dur) var(--ease), background var(--dur) var(--ease);
+  }
+  .cert__projet:hover { border-color: var(--pdom); background: color-mix(in srgb, var(--pdom) 16%, transparent); }
 </style>

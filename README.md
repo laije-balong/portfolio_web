@@ -6,7 +6,7 @@ Site **statique**, en **français**, mettant en avant une double trajectoire :
 
 > Refonte v2 (branche `v2-astro`). L'ancien site reste intact sur `main`.
 
-## 🧱 Stack
+## Stack
 
 - **[Astro 6](https://astro.build)** — sortie statique, zéro backend public.
 - **React 19** — îlots interactifs (système de particules du Hero).
@@ -15,7 +15,7 @@ Site **statique**, en **français**, mettant en avant une double trajectoire :
 - **Markdoc** — format de contenu (`.mdoc`).
 - **Aucune base de données.** Tout le contenu est versionné dans `src/content/`.
 
-## 🚀 Démarrage
+## Démarrage
 
 Prérequis : **Node ≥ 22.12**.
 
@@ -27,7 +27,7 @@ npm run dev      # site + éditeur sur http://localhost:4321
 - Site : http://localhost:4321
 - Éditeur de contenu (Keystatic) : http://localhost:4321/keystatic
 
-## 🧞 Commandes
+## Commandes
 
 | Commande          | Action                                            |
 | ----------------- | ------------------------------------------------- |
@@ -36,7 +36,7 @@ npm run dev      # site + éditeur sur http://localhost:4321
 | `npm run build`   | Build statique vers `./dist/` (valide le contenu) |
 | `npm run preview` | Prévisualise le build                             |
 
-## ✍️ Modifier le contenu
+## Modifier le contenu
 
 Projets, articles, certifications et jalons du parcours se gèrent **sans toucher
 au code**. Tout est expliqué dans **[GUIDE-CONTENU.md](./GUIDE-CONTENU.md)** :
@@ -50,7 +50,7 @@ formulaires → `git commit` + `git push`.
 > **Images de partage (Open Graph)** : générées automatiquement par page au build
 > (voir [GUIDE-CONTENU.md](./GUIDE-CONTENU.md)).
 
-## 📂 Structure
+## Structure
 
 ```
 src/
@@ -70,7 +70,7 @@ CLAUDE.md               # conventions de dev (pour l'IA et les contributeurs)
 GUIDE-CONTENU.md        # guide d'édition du contenu
 ```
 
-## 📄 Pages
+## Pages
 
 Accueil · `/projets` (filtres + détail) · `/blog` (+ article) · `/certifications`
 · `/parcours` (timeline de jalons) · `/a-propos`.
@@ -78,13 +78,13 @@ Accueil · `/projets` (filtres + détail) · `/blog` (+ article) · `/certificat
 > `/design` est un **styleguide interne** : accessible uniquement en local
 > (`npm run dev`), masqué en production (redirige vers 404, hors sitemap).
 
-## 🚧 Feuille de route
+## Feuille de route
 
 - [ ] Migrer le contenu : ~60 projets, ~14 certifications, billets de blog.
 - [ ] Enrichir `/parcours` : phases M1→M24, double piste (collection `jalons` prête).
 - [ ] Images Open Graph (partage social).
-- [ ] Déploiement statique + CI (Cloudflare Pages / Netlify).
+- [ ] Déploiement statique + CI (Netlify).
 
-## 📜 Licence
+## Licence
 
 Projet personnel — © BALONG Laije Belthassar (GnoLab).

@@ -166,6 +166,11 @@ export default config({
         }),
         date: fields.date({ label: "Date d'obtention" }),
         ordre: fields.integer({ label: 'Ordre (dans son domaine, croissant)', defaultValue: 0 }),
+        // Projets liés (0..N) — pointe vers la collection « projets ».
+        projets: fields.array(
+          fields.relationship({ label: 'Projet lié', collection: 'projets' }),
+          { label: 'Projets liés', itemLabel: (p) => p.value ?? '—' }
+        ),
         content: fields.markdoc({ label: 'Description' }),
       },
     }),

@@ -74,6 +74,10 @@ const certifications = defineCollection({
     fichier: z.string().nullish().transform((v) => v || undefined),
     date: z.coerce.date().optional(),
     ordre: z.number().default(0),
+    // Projets liés (0..N) : slugs de la collection « projets ». Un projet peut
+    // être adossé à plusieurs certifs et inversement (relation N..N). Slug
+    // orphelin ignoré à l'affichage (tolérance, comme le reste du schéma).
+    projets: z.array(z.string()).default([]),
   }),
 });
 
