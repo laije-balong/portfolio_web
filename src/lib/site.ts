@@ -7,7 +7,7 @@
 
 export const site = {
   /** Domaine de production (sert aux URLs absolues OG). */
-  url: 'https://gnolab-portfolio.netlify.app/',
+  url: 'https://balong-laije.netlify.app/',
   /** Nom de marque court. */
   brand: 'GnoLab',
   /** Identité affichée. */

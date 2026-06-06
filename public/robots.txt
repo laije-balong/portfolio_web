@@ -7,4 +7,4 @@ Allow: /
 Disallow: /keystatic
 
 # Sitemap (généré au build par @astrojs/sitemap).
-Sitemap: https://gnolab-portfolio.netlify.app/sitemap-index.xml
+Sitemap: https://balong-laije.netlify.app/sitemap-index.xml
